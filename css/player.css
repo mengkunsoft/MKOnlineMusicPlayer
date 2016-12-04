@@ -1,0 +1,460 @@
+/*
+    MK在线音乐播放器 V 1.1
+    支持搜索并播放音乐；
+    支持一键提取音乐外链；
+    支持显示歌曲封面、歌词。
+    
+    首发于吾爱破解论坛（http://www.52pojie.cn/）
+    孟坤网页实验室（http://lab.mkblog.cn/）出品
+    
+    前端界面修改自 http://sc.chinaz.com/jiaoben/150714514230.htm
+    音乐资源来自于 网易云音乐
+    
+    二次开发请保留以上信息，谢谢！
+*/
+
+*{
+    padding: 0;
+    margin: 0;
+}
+body{width: 100%;height: 100%;font-family: "Helvetica Neue","Hiragino Sans GB","Microsoft Yahei",Helvetica,Arial,sans-serif;}
+li{list-style: none;}
+input{border:0;}
+input:focus{outline: none;}
+html { overflow-y: hidden;overflow-x:hidden;}
+a{text-decoration: none;}
+.clear:after{content: '.';clear: both;display: block;height: 0;visibility: hidden;font-size: 0;line-height: 0;}
+
+/*滚动条美化*/
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-button:vertical{display:none}
+::-webkit-scrollbar-track:vertical{background-color:transparent;}
+::-webkit-scrollbar-track-piece{background-color:transparent;}
+::-webkit-scrollbar-thumb:vertical{background-color:rgba(204,204,204,.3);border-radius:6px}
+::-webkit-scrollbar-thumb:vertical:hover,
+::-webkit-scrollbar-thumb:vertical:active {background-color: #8C8C8C}
+
+.image-light,.image-light > img{
+    display: block;
+    margin: auto;
+    width: 185px;
+    height:  185px;
+}
+/*父容器*/
+.image-light{
+    overflow: hidden;
+    position: relative; /*设置为相对*/
+}
+/*图片*/
+img{
+    border: none;
+}
+/*流光（采用伪类实现，当然也可以是子元素）*/
+.image-light:after{
+    content: '';
+    position: absolute; /*相对父级绝对定位*/
+    width: 80px;
+    height: 100%;
+    top: 0;
+    left: -200px;  /*起始位置*/
+    overflow: hidden;
+    z-index:9;
+    /*背景渐变（兼容性写法）*/
+    background: -moz-linear-gradient(left,rgba(255,255,255,0) 0,rgba(255,255,255,.3) 50%,rgba(255,255,255,0) 100%);
+    background: -webkit-gradient(linear,left top,right top,color-stop(0%,rgba(255,255,255,0)),color-stop(50%,rgba(255,255,255,.3)),color-stop(100%,rgba(255,255,255,0)));
+    background: -webkit-linear-gradient(left,rgba(255,255,255,0) 0,rgba(255,255,255,.3) 50%,rgba(255,255,255,0) 100%);
+    background: -o-linear-gradient(left,rgba(255,255,255,0) 0,rgba(255,255,255,.3)50%,rgba(255,255,255,0) 100%);
+    background: linear-gradient(left,rgba(255,255,255,0) 0,rgba(255,255,255,.3) 50%,rgba(255,255,255,0) 100%);
+    -webkit-transform: skewX(-25deg);/*倾斜*/
+    -moz-transform: skewX(-25deg);
+    transform: skewX(-25deg);
+}
+/*鼠标滑过*/
+.image-light:hover:after{
+    -webkit-transition: left 1s ease-in-out; /*过渡*/
+    transition: left 1s ease-in-out;
+    left: 500px; /*结束位置*/
+}
+
+.listtipbar{  /*列表框最下面一行提示语*/
+    line-height: 41px;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+
+/*主体结构*/
+.blur{  /*模糊画布*/
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;
+}
+#canvas{
+    opacity: 1;-webkit-animation: fadeIn 0.7s 0.1s ease both;
+    -moz-animation: fadeIn 0.7s 0.1s ease both;
+    -ms-animation: fadeIn 0.7s 0.1s ease both;
+    -o-animation: fadeIn 0.7s 0.1s ease both;
+    animation: .7s ease 0.1s normal both 1 fadeIn;
+    width: 100%;
+    height: 100%;
+}
+.playerMain{width: 100%;height: 100%;min-height: 500px;min-width: 930px;transition:all 0.2s;}
+.top{position: absolute;top: 0;width: 100%;height: 56px;background: url("../images/bg.png") repeat 0 0;}
+.middle{position: absolute;top: 56px;bottom: 80px;background-color: #fff;width: 100%;}
+.mainWrap{position: relative;padding:0 310px 0 240px;height: 100%;}
+/*头部*/
+.logo{      /*头部logo*/
+    width: 162px;
+    height: 56px;
+    float: left;
+    margin-left: 16px;
+    display: block;
+    /*background:url("../images/logo.png") no-repeat 0 50%;*/
+    color: #fff;
+    font-size: 28px;
+    margin: 6px 0 0 30px;
+}
+.search{
+    position: absolute;
+    top: 13px;
+    left: 240px;
+    width: 230px;
+    height: 30px;
+    background: url("../images/search.png") no-repeat 0 0;
+}
+.searchBtn{     /*搜索图标*/
+    float: left;
+    width: 18px;
+    height: 28px;
+    padding: 1px 6px;
+    background: url("../images/sbtn.png") no-repeat 70% 50%;
+    cursor: pointer;
+}
+.searchTxt{  /*搜索输入框*/
+    float: left;
+    width: 186px;
+    height: 30px;
+    padding: 3px;
+    vertical-align: middle;
+    background-color: transparent;
+    color: #fff;
+    font-family: "Helvetica Neue","Hiragino Sans GB","Microsoft Yahei",Helvetica,Arial,sans-serif;
+}
+.mainNav{float: right;width:270px;height: 56px;}
+.tipLogin{width: 148px;height:25px;padding: 16px 15px 15px 33px;text-align: center;font-size: 14px;color: #fff;background: url("../images/common.png") -200px -210px;cursor: pointer;float: left;}
+.loginA{padding: 0 5px;color: #f60;text-decoration: none;}
+.myroom{         /*右上角链接*/
+    width: 100px;
+    height: 100%;
+    display: block;
+    float:right;
+    /*background: url("../images/common.png") 0 -150px;*/
+    color: #fff;
+    text-align: center;
+    line-height: 50px;
+}
+.leftBar{width: 190px;height: 100%;padding: 0 10px;position: absolute;top:0;left: 0;}
+.menuUL{width: 100%;padding: 10px 0;border-bottom: 1px solid #ccc;}
+.menuLi{width: 100%;height: 36px;}
+.menuLi a{font-size: 12px; display: block;height: 36px;line-height: 36px;padding-left: 36px;border-radius: 4px;position: relative;color: #333;text-decoration: none;}
+.cur a{background-color: #f0f0f0;}
+.icon{position: absolute;top: 9px;left: 9px;width: 18px;height: 18px;}
+.iplay{background: url("../images/icons.png") 0 -358px;}
+.ihst{background:url("../images/icons.png") 0 -376px;}
+.ishouc{background:url("../images/icons.png") 0 -394px;}
+.collectOut{width: 190px;height: 30px;padding-top: 10px;line-height: 30px;}
+.colS{float: left;color: #aaa;font-size: 12px;font-weight: bold;}
+.colA{float: right;width: 18px;height: 18px;background:url("../images/icons.png") 0 -412px;margin: 5px 0;}
+.cellectList{width: 185px;height: 89px;margin: 0 2.5px;background-image: url("../images/new-list.png");}
+
+/*播放列表*/
+.mainBody{height: 100%;}
+
+/*专辑信息*/
+.mainOuther{position: absolute;top: 0;right: 0;width: 250px;padding-right: 20px;height: 100%;}
+.albumCover{width: 250px;height: 185px;padding-top: 20px;text-align: center;}
+.albumSale{width: 250px;height: 42px;padding: 5px 0;text-align: center;}
+.asA{display: block;width: 130px;height: 40px;overflow: hidden;padding-left: 40px;border-radius: 4px;border:1px solid #e0e0e0;background:url("../images/tao.gif") no-repeat 50% 50%;margin: 0 auto;background-color: #ff7b00;}
+.playHd{width:816px;height: 36px;line-height: 36px;padding-top: 9px;position: absolute;top: 0;border-bottom: 1px solid #ccc;}
+.phInner{height: 100%;padding-left: 72px;padding-right: 110px;overflow: hidden;}
+.col{width: 33%;height: 100%;float: left;padding-right: 0.2%;line-height: 36px;text-align: left;color: #aaa;font-size: 12px;}
+.playBd{width:816px;position: absolute;top: 46px;bottom: 60px;}
+.scrollView{    /*音乐列表框*/
+    height: 100%;
+    width: 816px;
+    position: relative;
+    outline: 0;
+    -webkit-user-drag:none;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.songUL{width: 816px;height: 100%;}
+.songList{width: 816px;color: #333;border-bottom: 1px solid #ebebeb;position: relative;}
+.check{position: absolute;height: 16px;width: 16px;left: 0;padding: 12px 5px 12px 10px;}
+.checkIn,.checkAll{width: 16px;height: 16px;cursor: pointer;background: url("../images/icons.png") -1px -710px;-webkit-appearance:none;}
+.start{line-height: 41px; text-align: center; position: absolute;width: 36px;height: 41px;left: 31px;top: 0;text-align: center;}
+
+/*歌曲列表效果*/
+.songList .start em{    /*列表序号*/
+    toolbarBtn-style: normal;
+    font-family: Arial;
+    color: #aaa;
+    font-size: 12px;
+    cursor: pointer;
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin: 11px 9px;
+    line-height: 18px;
+}
+.songList:hover .start em{
+    cursor: pointer;
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin: 11px 9px;
+    background: url("../images/play.png") 0 0;
+    line-height: 18px;
+    color:transparent;
+}
+.songList:hover{background-color: #f5f5f5;}
+.start em:hover{background-position:-16px 0 ;}
+
+.songBd{height: 41px;line-height: 41px;padding: 0 110px 0 72px;width: 634px;}
+.songBd .col{color: #333;line-height: 41px;}
+.col{cursor: default;}
+.control{position: absolute;top: 0;right: 0;width: 110px;height: 41px;}
+.cicon{cursor: pointer; display: block;width: 18px;height: 18px;position: absolute;top:11px;background:url("../images/icons.png") no-repeat;}
+.love{background-position: -28 -130px;right: 86px;}
+.love:hover{background-position: 0 -155px;}
+.more{background-position: 0 -473px;right: 53px;display: none;}
+.more:hover{background-position: -28px -473px;}
+.dele{background-position: 0 -491px;right: 20px;display: none;}
+.dele:hover{background-position: -28px -491px;}
+.playFt{width: 816px;height: 45px;padding-top: 14px;border-top: 1px solid #ccc;position: absolute;bottom:0;}
+.track{height: 30px;width: 100%;line-height: 30px;position: relative;padding-left: 38px;}
+.uiCheck{position: absolute;left: 0;width: 16px;height: 16px;padding: 7px 10px;}
+.uiItem{float: left;height: 30px;line-height:30px;padding-right: 10px;}
+.itIcon{display: block;color: #333;font-size: 12px;}
+.itDele{width: 73px;height: 30px;background-image:url("../images/toolbarBtn.png");text-indent: 38px;}
+.itDele:hover{background-position: 0 -30px;}
+.itShou{width: 73px;height: 30px;background-image:url("../images/toolbarBtn.png");text-indent: 38px;background-position: -150px 0;}
+.itShou:hover{background-position: -150px -30px;}
+.itJin{width: 120px;height: 30px;background-image:url("../images/toolbarBtn.png");text-indent: 38px;background-position: -225px 0;}
+.itJin:hover{background-position: -225px -30px;}
+.itMore{width: 73px;height: 30px;background-image:url("../images/toolbarBtn.png");text-indent: 38px;background-position: -348px 0;}
+.itMore:hover{background-position: -348px -30px;}
+/*底部按键*/
+.bottom{position: absolute;left: 0;bottom: 0;width: 100%;height: 80px;background:url("../images/bg.png") repeat;}
+.playerWrap{position: relative;height: 100%;padding-left: 278px;padding-right: 330px;}
+.playerCon{position: absolute;top: 0;left: 0;width: 278px;height: 100%;}
+.pbtn{display: block;width: 30px;height: 30px;position: absolute;background-image: url("../images/icons.png");}
+.prevBtn{top: 25px;left: 38px;background-position: 0 -90px;}
+.playBtn{top: 25px;left: 91px;}
+.nextBtn{background-position: 0 -60px;top:25px;left: 144px;}
+.mode{display: block;width:20px;height: 18px;position: absolute;top: 31px;left: 202px;background:url("../images/icons.png") 0 -181px; }
+.playInfo{height: 100%;position: relative;}
+.trackInfo{position: absolute;width: 100%;height:18px;line-height: 18px;top: 20px;color: #fff;}
+.trackInfo a{color: #fff;font-size: 14px;text-decoration: none;}
+.trackCon{float: right;width: 100px;height: 18px;}
+.tc1{width: 18px;height: 18px;display: block;position: absolute;top: 0;right: 66px;}
+.songName,.songPlay{float: left;}
+.tc1{position: absolute;width: 18px;height: 18px;top: 0;right: 66px;background-image: url("../images/icons.png");background-position: 0 -241px;}
+.tc2{position: absolute;width: 18px;height: 18px;top: 0;right: 33px;background-image: url("../images/icons.png");background-position: 0 -259px;}
+.tc3{position: absolute;width: 18px;height: 18px;top: 0;right: 0;background-image: url("../images/icons.png");background-position: 0 -277px;}
+.playerLength{width: 100%;height: 20px;font-size: 10px;position: absolute;top: 43px;}
+.position{width: 40px;height: 18px;line-height: 18px;position: absolute;left:0;color: #fff;opacity: 0.3}
+.duration{width: 40px;height: 18px;line-height: 18px;position: absolute;right:0;color: #fff;opacity: 0.3;text-align: right;}
+.progress{position: absolute;left: 40px;right: 40px;height: 18px;}
+.pro1,.pro2{position: absolute;left: 0;height: 100%;width: 100%;background: url("../images/pro.png") repeat-x 0 50%;}
+.dian,.dian2{display: block;width: 10px;height: 18px;position: absolute;top: 0;background: url("../images/icons.png") no-repeat -32px -338px;}
+.dian2{left: 79px;}
+.vol{position: absolute;top: 0;right: 0;width:270px;height: 100%;}
+.pinBtn{
+    display: block;
+    position: absolute;
+    top: 28px;
+    right: 176px;
+    width: 80px;
+    height: 32px;
+    background: url("../images/quality.png") no-repeat 0 -800px;
+}
+.volm{position: absolute;width: 110px;height: 18px;top: 31px;right:40px;}
+.volSpeaker{position: absolute;width: 18px;height: 18px;background: url("../images/icons.png") no-repeat 0 -295px;}
+.volControl{position: absolute;left:24px;width: 80px;height: 18px;background: url("../images/pro.png") repeat-x 0 50%;}
+
+/*歌词部分*/
+#lyr{
+    width: 250px;
+    height:140px;
+    margin:0 20px 0 0;
+    line-height:25px; 
+    font-size:12px;
+    text-align:center;
+    padding-top: 60px;
+    font-family: 'Helvetica Neue', 'Hiragino Sans GB', 'Microsoft Yahei', Helvetica, Arial, sans-serif;
+    color: #333;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.playing{  /*正在播放的歌词*/
+    color: #f60;    
+    font-weight: bold;
+}
+/*歌曲漫游*/
+.manyou{width: 749px;height: 41px;padding: 0 36px 0 31px;position: relative;}
+.songLMain{width: 100%;height: 40px;line-height: 41px;}
+.manyouA{position: absolute;display: block;width: 88px;height: 30px;padding-left: 30px;left: 72px;top: 0;font-size: 12px;line-height: 30px;color: #fff;background: url("../images/manyou.png");}
+
+/*fadein动画*/
+@-webkit-keyframes fadeIn/* Safari 和 Chrome */
+{
+0%   {opacity: 0;}
+10%	 {opacity: 0.1}
+20%	 {opacity: 0.2}
+20%  {opacity: 0.2;}
+30%  {opacity: 0.3;}
+40%  {opacity: 0.4;}
+50%  {opacity: 0.5;}
+60%  {opacity: 0.6;}
+70%  {opacity: 0.7;}
+80%  {opacity: 0.8;}
+90%  {opacity: 0.9;}
+100% {opacity: 1;}
+}
+@-moz-keyframes fadeIn
+{
+0%   {opacity: 0;}
+10%	 {opacity: 0.1}
+20%	 {opacity: 0.2}
+20%  {opacity: 0.2;}
+30%  {opacity: 0.3;}
+40%  {opacity: 0.4;}
+50%  {opacity: 0.5;}
+60%  {opacity: 0.6;}
+70%  {opacity: 0.7;}
+80%  {opacity: 0.8;}
+90%  {opacity: 0.9;}
+100% {opacity: 1;}
+}
+@keyframes myfirst
+{
+0%   {opacity: 0;}
+10%	 {opacity: 0.1}
+20%	 {opacity: 0.2}
+20%  {opacity: 0.2;}
+30%  {opacity: 0.3;}
+40%  {opacity: 0.4;}
+50%  {opacity: 0.5;}
+60%  {opacity: 0.6;}
+70%  {opacity: 0.7;}
+80%  {opacity: 0.8;}
+90%  {opacity: 0.9;}
+100% {opacity: 1;}
+}
+
+@-moz-keyframes myfirst /* Firefox */
+{
+0%   {opacity: 0;}
+10%	 {opacity: 0.1}
+20%	 {opacity: 0.2}
+20%  {opacity: 0.2;}
+30%  {opacity: 0.3;}
+40%  {opacity: 0.4;}
+50%  {opacity: 0.5;}
+60%  {opacity: 0.6;}
+70%  {opacity: 0.7;}
+80%  {opacity: 0.8;}
+90%  {opacity: 0.9;}
+100% {opacity: 1;}
+}
+
+@-webkit-keyframes myfirst /* Safari 和 Chrome */
+{
+0%   {opacity: 0;}
+10%	 {opacity: 0.1}
+20%	 {opacity: 0.2}
+20%  {opacity: 0.2;}
+30%  {opacity: 0.3;}
+40%  {opacity: 0.4;}
+50%  {opacity: 0.5;}
+60%  {opacity: 0.6;}
+70%  {opacity: 0.7;}
+80%  {opacity: 0.8;}
+90%  {opacity: 0.9;}
+100% {opacity: 1;}
+}
+
+@-o-keyframes myfirst /* Opera */
+{
+0%   {opacity: 0;}
+10%	 {opacity: 0.1}
+20%	 {opacity: 0.2}
+20%  {opacity: 0.2;}
+30%  {opacity: 0.3;}
+40%  {opacity: 0.4;}
+50%  {opacity: 0.5;}
+60%  {opacity: 0.6;}
+70%  {opacity: 0.7;}
+80%  {opacity: 0.8;}
+90%  {opacity: 0.9;}
+100% {opacity: 1;}
+}
+
+
+/*弹窗层*/  
+
+.pop-box {   
+    z-index: 9999; /*这个数值要足够大，才能够显示在最上层*/  
+    margin-bottom: 3px;   
+    display: none;   
+    position: absolute;   
+    background: #FFF;   
+    text-align: center;
+    font-size: 16px;
+    width: 300px;
+}   
+  
+.pop-box .tips{ /*弹窗中的提示语*/
+    line-height: 30px;
+    padding: 10px;
+    cursor: normal;
+    color: #f60;
+}
+#msgbody textarea{  /*弹窗中的文本框*/
+    width: 280px;
+    font-size: 14px;
+    font-family: "Helvetica Neue","Hiragino Sans GB","Microsoft Yahei",Helvetica,Arial,sans-serif;
+}
+.pop-box .readit{   /* “我知道了” */
+    font-size: 14px;
+    line-height: 40px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	-ms-transition: all 0.5s ease;
+}
+.pop-box .readit:hover{   /* “我知道了” */
+    color: #666;
+}
+
+.mask {   /*遮罩层*/  
+    color:#C7EDCC;
+    background-color:#000;
+    position:absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.59;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 59);
+    filter: alpha(opacity = 59);
+} 

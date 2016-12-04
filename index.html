@@ -1,0 +1,194 @@
+<!--
+    MK在线音乐播放器 V 1.1
+    支持搜索并播放音乐；
+    支持一键提取音乐外链；
+    支持显示歌曲封面、歌词。
+    
+    首发于吾爱破解论坛（http://www.52pojie.cn/）
+    孟坤网页实验室（http://lab.mkblog.cn/）出品
+    
+    前端界面修改自 http://sc.chinaz.com/jiaoben/150714514230.htm
+    音乐资源来自于 网易云音乐
+    
+    
+-->
+<html>
+<head>
+    <title>在线听歌</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!--[if IE]>
+    <script type="text/javascript" language="javascript">
+        alert("本播放器暂不支持IE！请换一个浏览器……");
+        //window.location="/oops.html";
+    </script>
+    <style>body{display: none;}</style>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="css/player.css">
+    
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/canvas.js"></script>
+    <script type="text/javascript" src="js/player.js"></script>
+
+</head>
+<body>
+
+	<!--模糊画布-->
+	<div class="blur">
+		<canvas id="canvas"></canvas>
+	</div>
+	
+	<div class="playerMain">
+		<div class="top">
+			<a href="#" class="logo" title="孟坤在线听歌V1.1 歌曲来自网易云音乐">♫ 在线听歌</a>
+			<div class="search">
+                <form id="search-input-form">
+                    <input name="pages" id="pages" type="text" value="1" hidden>
+                    <div class="searchBtn" id="searchBtn"></div>
+                    <input type="text" class="searchTxt" name = "name" id="searchTxt" value="薛之谦">
+                </form>
+			</div>
+			<div class="mainNav">
+				<!--div class="tipLogin">
+					马上
+					<a href="#" class="loginA">登录</a>
+				</div-->
+				<a href="http://mkblog.cn" class="myroom" target="_blank">孟坤博客</a>
+			</div>
+		</div>
+		<div class="middle">
+			<div class="mainWrap">
+				<div class="leftBar">
+					<ul class="menuUL">
+						<li class="menuLi cur">
+							<a href="#">
+								<i class="icon iplay"></i>
+								正在播放
+							</a>
+						</li>
+						<li class="menuLi cannotclick">
+							<a href="#">
+								<i class="icon ihst"></i>
+								播放历史
+							</a>
+						</li>
+						<li class="menuLi cannotclick">
+							<a href="#">
+								<i class="icon ishouc"></i>
+								我收藏的单曲
+							</a>
+						</li>
+					</ul>
+					<!--div class="collectOut">
+						<span class="colS">我创建的精选集</span>
+						<a href="#" class="colA"></a>
+					</div>
+					<div class="cellectList"></div-->
+					<audio id="audio" src=""></audio>			
+				</div>
+				<div class="mainBody">
+					<div class="playHd">
+						<div class="phInner">
+							<div class="col">歌曲</div>
+							<div class="col">演唱者</div>
+							<div class="col">专辑</div>
+						</div>
+					</div>
+					<div class="playBd">
+						<div class="scrollView">
+							<ul class="songUL" id="musicList">
+								
+								<li class="songList loadmoreRemove"><div class="songLMain listtipbar">播放器加载失败，请刷新网页</div></li>
+								
+								<li class="songList"></li>
+								<script type="text/javascript" src="js/ajaxList.js"></script>
+							</ul>
+						</div>
+					</div>
+					<div class="playFt">
+						<div class="track">
+							<div class="uiCheck">
+								<input class="checkAll" type="checkbox" select="0">
+							</div>
+							<div class="uiItem">
+								<a href="#" class="itIcon itDele">删除</a>
+							</div>
+							<div class="uiItem">
+								<a href="#" class="itIcon itShou">收藏</a>
+							</div>
+							<div class="uiItem">
+								<a href="#" class="itIcon itJin">添加到精选集</a>
+							</div>
+							<div class="uiItem">
+								<a href="#" class="itIcon itMore">更多</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mainOuther">
+					<div class="albumCover">
+						<a href="#" class="image-light">
+							<img src="http://p3.music.126.net/J3VtOLW7ilNc0byWk37n3g==/3387595325986974.jpg" id="canvas1">
+						</a>
+					</div>
+					<div class="albumSale">
+						<!--a href="#" class="asA">
+							<img src="">
+						</a-->
+					</div>
+					<div id="lyr"></div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="bottom">
+			<div class="playerWrap">
+				<div class="playerCon">
+					<a href="#" class="pbtn prevBtn"></a>
+					<a href="#" class="pbtn playBtn"></a>
+					<a href="#" class="pbtn nextBtn"></a>
+					<!--a href="#" class="mode"></a-->
+				</div>
+				<div class="playInfo">
+					<div class="trackInfo">
+						<a href="#" class="songName"></a>
+						-
+						<a href="#" class="songPlayer"></a>
+						<!--div class="trackCon">
+							<a href="#" class="tc1"></a>
+							<a href="#" class="tc2"></a>
+							<a href="#" class="tc3"></a>
+						</div-->
+					</div>
+					<div class="playerLength">
+						<div class="position">00:00</div>
+						<div class="progress">
+							<div class="pro1"></div>
+							<div class="pro2">
+								<a href="#" class="dian"></a>
+							</div> 
+						</div>
+						<div class="duration">00:00</div>
+					</div>
+				</div>
+				<div class="vol">
+					<!--a href="#" class="pinBtn">高品质音效</a-->
+					<div class="volm">
+						<div class="volSpeaker"></div>
+						<div class="volControl">
+							<a href="#" class="dian2"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>  <!--<div class="bottom">-->
+	</div>  <!--class="playerMain"-->
+	
+	<div id="msgbox" class="pop-box"></div>
+	<div id="mask" class="mask"></div>
+	
+</body>
+</html>
