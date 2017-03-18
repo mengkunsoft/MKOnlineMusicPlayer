@@ -1,194 +1,152 @@
-<!--
-    MK在线音乐播放器 V 1.1
-    支持搜索并播放音乐；
-    支持一键提取音乐外链；
-    支持显示歌曲封面、歌词。
-    
-    首发于吾爱破解论坛（http://www.52pojie.cn/）
-    孟坤网页实验室（http://lab.mkblog.cn/）出品
-    
-    前端界面修改自 http://sc.chinaz.com/jiaoben/150714514230.htm
-    音乐资源来自于 网易云音乐
-    
-    
--->
+<!doctype html>
 <html>
 <head>
-    <title>在线听歌</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <!--[if IE]>
-    <script type="text/javascript" language="javascript">
-        alert("本播放器暂不支持IE！请换一个浏览器……");
-        //window.location="/oops.html";
-    </script>
-    <style>body{display: none;}</style>
-    <![endif]-->
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    
+    <!-- 强制移动设备以app模式打开页面(即在移动设备下全屏，仅支持部分浏览器) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="full-screen" content="yes"><!--UC强制全屏-->
+    <meta name="browsermode" content="application"><!--UC应用模式-->
+    <meta name="x5-fullscreen" content="true"><!--QQ强制全屏-->
+    <meta name="x5-page-mode" content="app"><!--QQ应用模式-->
+    
+    <title>MKOnlinePlayer v2.0</title>
+    <meta name="description" content="一款开源的基于网易云音乐api的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人音乐播放列表同步等功能。"/>
+    <meta name="keywords" content="孟坤播放器,在线音乐播放器,MKOnlinePlayer,网易云音乐,音乐api,音乐播放器源代码"/>
+    
+    <!-- 不支持IE8及以下版本浏览器 -->
+    <!--[if lte IE 8]>
+        <script>window.location.href="plugns/killie/"</script>
+    <![endif]--> 
+    
+    <!-- jQuery文件 -->
+    <script src="js/jquery.min.js"></script>
+    
+    <!-- 播放器样式表文件 -->
     <link rel="stylesheet" type="text/css" href="css/player.css">
     
-    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
-    <script type="text/javascript" src="js/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/canvas.js"></script>
-    <script type="text/javascript" src="js/player.js"></script>
-
+    <!-- 小屏幕样式修复 -->
+    <link rel="stylesheet" type="text/css" href="css/small.css">
+    
+    <!-- 滚动条美化样式文件 -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.min.css">
+    
 </head>
 <body>
 
-	<!--模糊画布-->
-	<div class="blur">
-		<canvas id="canvas"></canvas>
-	</div>
-	
-	<div class="playerMain">
-		<div class="top">
-			<a href="#" class="logo" title="孟坤在线听歌V1.1 歌曲来自网易云音乐">♫ 在线听歌</a>
-			<div class="search">
-                <form id="search-input-form">
-                    <input name="pages" id="pages" type="text" value="1" hidden>
-                    <div class="searchBtn" id="searchBtn"></div>
-                    <input type="text" class="searchTxt" name = "name" id="searchTxt" value="薛之谦">
-                </form>
-			</div>
-			<div class="mainNav">
-				<!--div class="tipLogin">
-					马上
-					<a href="#" class="loginA">登录</a>
-				</div-->
-				<a href="http://mkblog.cn" class="myroom" target="_blank">孟坤博客</a>
-			</div>
-		</div>
-		<div class="middle">
-			<div class="mainWrap">
-				<div class="leftBar">
-					<ul class="menuUL">
-						<li class="menuLi cur">
-							<a href="#">
-								<i class="icon iplay"></i>
-								正在播放
-							</a>
-						</li>
-						<li class="menuLi cannotclick">
-							<a href="#">
-								<i class="icon ihst"></i>
-								播放历史
-							</a>
-						</li>
-						<li class="menuLi cannotclick">
-							<a href="#">
-								<i class="icon ishouc"></i>
-								我收藏的单曲
-							</a>
-						</li>
-					</ul>
-					<!--div class="collectOut">
-						<span class="colS">我创建的精选集</span>
-						<a href="#" class="colA"></a>
-					</div>
-					<div class="cellectList"></div-->
-					<audio id="audio" src=""></audio>			
-				</div>
-				<div class="mainBody">
-					<div class="playHd">
-						<div class="phInner">
-							<div class="col">歌曲</div>
-							<div class="col">演唱者</div>
-							<div class="col">专辑</div>
-						</div>
-					</div>
-					<div class="playBd">
-						<div class="scrollView">
-							<ul class="songUL" id="musicList">
-								
-								<li class="songList loadmoreRemove"><div class="songLMain listtipbar">播放器加载失败，请刷新网页</div></li>
-								
-								<li class="songList"></li>
-								<script type="text/javascript" src="js/ajaxList.js"></script>
-							</ul>
-						</div>
-					</div>
-					<div class="playFt">
-						<div class="track">
-							<div class="uiCheck">
-								<input class="checkAll" type="checkbox" select="0">
-							</div>
-							<div class="uiItem">
-								<a href="#" class="itIcon itDele">删除</a>
-							</div>
-							<div class="uiItem">
-								<a href="#" class="itIcon itShou">收藏</a>
-							</div>
-							<div class="uiItem">
-								<a href="#" class="itIcon itJin">添加到精选集</a>
-							</div>
-							<div class="uiItem">
-								<a href="#" class="itIcon itMore">更多</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="mainOuther">
-					<div class="albumCover">
-						<a href="#" class="image-light">
-							<img src="http://p3.music.126.net/J3VtOLW7ilNc0byWk37n3g==/3387595325986974.jpg" id="canvas1">
-						</a>
-					</div>
-					<div class="albumSale">
-						<!--a href="#" class="asA">
-							<img src="">
-						</a-->
-					</div>
-					<div id="lyr"></div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="bottom">
-			<div class="playerWrap">
-				<div class="playerCon">
-					<a href="#" class="pbtn prevBtn"></a>
-					<a href="#" class="pbtn playBtn"></a>
-					<a href="#" class="pbtn nextBtn"></a>
-					<!--a href="#" class="mode"></a-->
-				</div>
-				<div class="playInfo">
-					<div class="trackInfo">
-						<a href="#" class="songName"></a>
-						-
-						<a href="#" class="songPlayer"></a>
-						<!--div class="trackCon">
-							<a href="#" class="tc1"></a>
-							<a href="#" class="tc2"></a>
-							<a href="#" class="tc3"></a>
-						</div-->
-					</div>
-					<div class="playerLength">
-						<div class="position">00:00</div>
-						<div class="progress">
-							<div class="pro1"></div>
-							<div class="pro2">
-								<a href="#" class="dian"></a>
-							</div> 
-						</div>
-						<div class="duration">00:00</div>
-					</div>
-				</div>
-				<div class="vol">
-					<!--a href="#" class="pinBtn">高品质音效</a-->
-					<div class="volm">
-						<div class="volSpeaker"></div>
-						<div class="volControl">
-							<a href="#" class="dian2"></a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>  <!--<div class="bottom">-->
-	</div>  <!--class="playerMain"-->
-	
-	<div id="msgbox" class="pop-box"></div>
-	<div id="mask" class="mask"></div>
-	
+<!-- 播放器本体 -->
+<audio id="mkplayer" src=""></audio>
+
+<!-- 模糊化背景 -->
+<canvas id="blur-canvas"></canvas>
+<div id="blur"></div>
+
+<!-- 头部logo -->
+<div class="header">
+    <div class="logo" title="Version 2.0; Based on 163music; Powered by mengkun">
+        ♫ MKOnlinePlayer
+    </div>
+</div>  <!--class="header"-->
+
+<!-- 中间主体区域 -->
+<div class="center">
+    <div class="container">
+        <div class="btn-bar">
+            <!-- tab按钮区 -->
+            <div class="btn-box" id="btn-area">
+                <span class="btn" data-action="player" hidden>播放器</span>
+                <span class="btn" data-action="playing" title="正在播放列表">正在播放</span>
+                <span class="btn" data-action="sheet" title="音乐播放列表">播放列表</span>
+                <span class="btn" data-action="search" title="点击搜索音乐">歌曲搜索</span>
+            </div>
+            <!-- 搜索框 -->
+            <div class="btn-box" id="search-area" hidden>
+                <span class="input">
+                    <input type="text" name="wd" id="search-wd" placeholder="搜索歌手、歌名、专辑">
+                </span>
+                <span class="search-btn search-close" title="点击关闭搜索框">╳</span>
+                <span class="search-btn search-submit">搜索</span>
+            </div>
+        </div>  <!--class="btn-bar"-->
+        
+        <div class="data-area">
+            <!--歌曲歌单-->
+            <div id="sheet" class="data-box" hidden></div>
+            
+            <!--音乐播放列表-->
+            <div id="main-list" class="music-list data-box"></div>
+        </div>  <!--class="data-area"-->
+        
+        <!-- 右侧封面及歌词展示 -->
+        <div class="player" id="player">
+            <!--歌曲封面-->
+            <div class="cover">
+                <img src="images/player_cover.png" class="music-cover" id="music-cover">
+            </div>
+            <!--滚动歌词-->
+            <div class="lyric">
+                <ul id="lyric"></ul>
+            </div>
+            <div id="music-info" title="点击查看歌曲信息">i</div>
+        </div>
+    </div>  <!--class="container"-->
+</div>  <!--class="center"-->
+
+<!-- 播放器底部区域 -->
+<div class="footer">
+    <div class="container">
+        <div class="con-btn">
+            <a href="javascript:;" class="player-btn btn-prev" title="上一首"></a>
+            <a href="javascript:;" class="player-btn btn-play" title="暂停/继续"></a>
+            <a href="javascript:;" class="player-btn btn-next" title="下一首"></a>
+        </div>  <!--class="con-btn"-->
+        
+        <div class="vol">
+            <div class="quiet">
+                <a href="javascript:;" class="player-btn btn-quiet" title="静音"></a>
+            </div>
+            <div class="volume">
+                <div class="volume-box">  
+                    <div id="volume-progress" class="mkpgb-area"></div>
+                </div>
+            </div>
+        </div>  <!--class="footer"-->
+        
+        <div class="progress">
+            <div class="progress-box">  
+                <div id="music-progress" class="mkpgb-area"></div>
+            </div>
+        </div>  <!--class="progress"-->
+    </div>  <!--class="container"-->
+</div>  <!--class="footer"-->
+
+<!-- layer弹窗插件 -->
+<script src="plugns/layer/layer.js"></script>
+
+<!-- 播放器数据加载模块 -->
+<script src="js/ajax.js"></script>
+
+<!-- 播放器歌词解析模块 -->
+<script src="js/lyric.js"></script>
+
+<!-- 音乐列表配置 -->
+<script src="js/musicList.js"></script>
+
+<!-- 封装函数及ui交互模块 -->
+<script src="js/functions.js"></script>
+
+<!-- 播放器主体功能模块 -->
+<script src="js/player.js"></script>
+
+<!-- 滚动条美化插件 -->
+<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+
+<!-- 站长统计代码 -->
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan style='display: none' id='cnzz_stat_icon_1261525999'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261525999' type='text/javascript'%3E%3C/script%3E"));</script>
+
 </body>
 </html>
