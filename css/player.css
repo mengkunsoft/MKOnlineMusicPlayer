@@ -1,9 +1,9 @@
 @charset "utf-8";
 /**************************************************
- * MKOnlinePlayer v2.0
+ * MKOnlinePlayer v2.1
  * 播放器样式表文件
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-16
+ * 时间：2017-3-20
  *************************************************/
 blockquote, body, button, dd, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, hr, html, input, lengend, li, ol, p, pre, td, textarea, th, ul {
     margin: 0;
@@ -341,6 +341,12 @@ html,body{
     background-position: -120px -40px;
 }
 
+/* 分享弹窗中的链接框 */
+.share-url {
+    width: 100%;
+    margin-top: 10px;
+}
+
 /* 列表中点击加载更多 */
 .list-loadmore {
     cursor: pointer;
@@ -462,6 +468,13 @@ html,body{
 #lyric .lplaying {
     color: #31c27c;
 }
+/* 歌词显示区显示的提示语(如加载中、无歌词等) */
+.lyric-tip {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+}
+
 /* 歌曲信息按钮 */
 #music-info {
     position: absolute;

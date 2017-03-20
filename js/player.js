@@ -12,7 +12,7 @@ var mkPlayer = {
     defaultlist: 3,    // 默认要显示的播放列表编号
     autoplay: false,    // 是否自动播放(true/false) *在手机端可能无法自动播放
     volume: 0.6,        // 默认音量值(0~1之间)
-    debug: false   // 是否开启调试模式(true/false)
+    debug: true   // 是否开启调试模式(true/false)
 };
 
 
@@ -26,19 +26,6 @@ var mkPlayer = {
 // 存储全局变量
 var rem = [];
 
-// 播放功能初始化
-function audioInit() {
-    var mkAudio = $("#mkplayer")[0];
-    // 应用初始音量
-    mkAudio.volume = volume_bar.percent;
-    // 绑定歌曲进度变化事件
-    mkAudio.addEventListener('timeupdate', updateProgress);
-    mkAudio.addEventListener('play', audioPlay); // 开始播放了
-    mkAudio.addEventListener('pause', audioPause);   // 暂停
-    mkAudio.addEventListener('ended', nextMusic);   // 播放结束
-    mkAudio.addEventListener('error', audioErr);   // 播放器错误处理
-}
-
 // 音频错误处理函数
 function audioErr() {
     // 没播放过，直接跳过
@@ -51,7 +38,7 @@ function audioErr() {
 // 点击暂停按钮的事件
 function pause() {
     if(rem.paused === false) {  // 之前是播放状态
-        $("#mkplayer")[0].pause();  // 暂停
+        rem.audio.pause();  // 暂停
     } else {
         // 第一次点播放
         if(rem.playlist === undefined) {
@@ -64,7 +51,7 @@ function pause() {
             
             listClick(0);
         }
-        $("#mkplayer")[0].play();
+        rem.audio.play();
     }
 }
 
@@ -99,9 +86,9 @@ function updateProgress(){
     // 暂停状态不管
     if(rem.paused !== false) return true;
     // 同步进度条
-	music_bar.goto($("#mkplayer")[0].currentTime / $("#mkplayer")[0].duration);
+	music_bar.goto(rem.audio.currentTime / rem.audio.duration);
     // 同步歌词显示	
-	scrollLyric($("#mkplayer")[0].currentTime);
+	scrollLyric(rem.audio.currentTime);
 }
 
 // 显示的列表中的某一项点击后的处理函数
@@ -204,6 +191,8 @@ function play(music) {
         return false;
     }
     
+    music_bar.goto(0);  // 进度条强制归零
+    
     addHis(music);  // 添加到播放历史
     
     // 如果当前主界面显示的是播放历史，那么还需要刷新列表显示
@@ -215,26 +204,38 @@ function play(music) {
     
     changeCover(music.albumPic);    // 更新封面展示
     ajaxLyric(music.musicId, lyricCallback);     // ajax加载歌词
-    $("#mkplayer").attr("src", music.mp3Url);   // 更改播放器音乐url
-    $("#mkplayer")[0].play();   // 开始播放
+    $('audio').remove();    // 移除之前的audio
+    
+    var newaudio = $('<audio>').html('<source src="'+ music.mp3Url +'">').appendTo('html');
+    rem.audio = newaudio[0];
+    // 应用初始音量
+    rem.audio.volume = volume_bar.percent;
+    // 绑定歌曲进度变化事件
+    rem.audio.addEventListener('timeupdate', updateProgress);
+    rem.audio.addEventListener('play', audioPlay); // 开始播放了
+    rem.audio.addEventListener('pause', audioPause);   // 暂停
+    rem.audio.addEventListener('ended', nextMusic);   // 播放结束
+    rem.audio.addEventListener('error', audioErr);   // 播放器错误处理
+    
+    rem.audio.play();
 }
 
 // 我的要求并不高，保留这一句版权信息可好？
 // 保留了，你不会损失什么；而保留版权，是对作者最大的尊重。
-console.info('欢迎使用 MKOnlinePlayer!\n当前版本： v2.0 \n作者：mengkun(http://mkblog.cn)\n歌曲来源于：网易云音乐(http://music.163.com/)\nGithub：https://github.com/mengkunsoft/MKOnlineMusicPlayer');
+console.info('欢迎使用 MKOnlinePlayer!\n当前版本： v2.1 \n作者：mengkun(http://mkblog.cn)\n歌曲来源于：网易云音乐(http://music.163.com/)\nGithub：https://github.com/mengkunsoft/MKOnlineMusicPlayer');
 
 // 音乐进度条拖动回调函数
 function mBcallback(newVal) {
-    var newTime = $("#mkplayer")[0].duration * newVal;
+    var newTime = rem.audio.duration * newVal;
     // 应用新的进度
-    $("#mkplayer")[0].currentTime = newTime;
+    rem.audio.currentTime = newTime;
     refreshLyric(newTime);
 }
 
 // 音量条变动回调函数
 // 参数：新的值
 function vBcallback(newVal) {
-    $("#mkplayer")[0].volume = newVal;
+    rem.audio.volume = newVal;
     
     if($(".btn-quiet").is('.btn-state-quiet')) {
         $(".btn-quiet").removeClass("btn-state-quiet");     // 取消静音
