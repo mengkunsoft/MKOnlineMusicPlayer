@@ -1,32 +1,46 @@
 /**************************************************
- * MKOnlinePlayer v2.0
+ * MKOnlinePlayer v2.1
  * 歌词解析及滚动模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-16
+ * 时间：2017-3-20
  *************************************************/
  
 var lyricArea = $("#lyric");    // 歌词显示容器
+
+// 在歌词区显示提示语（如歌词加载中、无歌词等）
+function lyricTip(str) {
+    lyricArea.html("<li class='lyric-tip'>"+str+"</li>");     // 显示内容
+}
 
 // 歌曲加载完后的回调函数
 // 参数：歌词源文件
 function lyricCallback(str) {
     rem.lyric = parseLyric(str);    // 解析获取到的歌词
     
+    if(rem.lyric === '') {
+        lyricTip('没有歌词');
+        return false;
+    }
+    
     lyricArea.html('');     // 清空歌词区域的内容
     lyricArea.scrollLeft(0);    // 滚动到顶部
     
     // 显示全部歌词
+    var i = 0;
     for(var k in rem.lyric){
         var txt = rem.lyric[k];
         if(!txt) txt = "&nbsp;";
-        var li = $("<li>"+txt+"</li>");
+        var li = $("<li data-no='"+i+"' class='lrc-item'>"+txt+"</li>");
         lyricArea.append(li);
+        i++;
     }
 }
 
 // 强制刷新当前时间点的歌词
 // 参数：当前播放时间（单位：秒）
 function refreshLyric(time) {
+    if(rem.lyric === '') return false;
+    
     time = parseInt(time);  // 时间取整
     var i = 0;
     for(var k in rem.lyric){
@@ -37,9 +51,11 @@ function refreshLyric(time) {
     scrollLyric(i);
 }
 
-// 滚动歌词
+// 滚动歌词到指定句
 // 参数：当前播放时间（单位：秒）
 function scrollLyric(time) {
+    if(rem.lyric === '') return false;
+    
     time = parseInt(time);  // 时间取整
     
     if(rem.lyric === undefined || rem.lyric[time] === undefined) return false;  // 当前时间点没有歌词
@@ -52,8 +68,8 @@ function scrollLyric(time) {
         i ++;
     }
     rem.lastLyric = time;  // 记录方便下次使用
-    $(".lplaying").removeClass("lplaying");
-    lyricArea.children().eq(i).attr("class","lplaying");    // 加上正在播放样式
+    $(".lplaying").removeClass("lplaying");     // 移除其余句子的正在播放样式
+    $(".lrc-item[data-no='" + i + "']").addClass("lplaying");    // 加上正在播放样式
     
     var scroll = (lyricArea.children().height() * i) - ($(".lyric").height() / 2); 
     lyricArea.stop().animate({scrollTop: scroll}, 300);  // 平滑滚动到当前歌词位置
@@ -63,6 +79,7 @@ function scrollLyric(time) {
 // 解析歌词
 // 参数：原始歌词文件
 function parseLyric(lrc) {
+    if(lrc === '') return '';
     var lyrics = lrc.split("\n");
     var lrcObj = {};
     for(var i=0;i<lyrics.length;i++){

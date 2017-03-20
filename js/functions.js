@@ -68,9 +68,6 @@ $(function(){
             case "sheet":   // 播放列表
                 dataBox("sheet");    // 在主界面显示出音乐专辑
             break;
-            
-            default:
-                layer.msg('这个功能还没加');
         }
     });
     
@@ -229,7 +226,7 @@ $(function(){
         var tempStr = "<span class='info-title'>歌名：</span>" + tmpMusic.musicName + 
         "<br><span class='info-title'>歌手：</span>" + tmpMusic.artistsName + 
         "<br><span class='info-title'>专辑：</span>" + tmpMusic.albumName + 
-        "<br><span class='info-title'>时长：</span>" + formatTime($("#mkplayer")[0].duration) + 
+        "<br><span class='info-title'>时长：</span>" + formatTime(rem.audio.duration) + 
         "<br><span class='info-title'>操作：</span><span class='info-btn' onclick='thisDownload()'>下载</span><span style='margin-left: 10px' class='info-btn' onclick='thisShare()'>外链</span>";
         
         layer.open({
@@ -262,19 +259,16 @@ $(function(){
         if($(this).is('.btn-state-quiet')) {
             oldVol = $(this).data("volume");
             $(this).removeClass("btn-state-quiet");     // 取消静音
-            $("#mkplayer")[0].volume = oldVol;
+            rem.audio.volume = oldVol;
             volume_bar.goto(oldVol);    // 恢复之前的音量
         } else {
             oldVol = volume_bar.percent;
-            $("#mkplayer")[0].volume = 0;
+            rem.audio.volume = 0;
             $(this).addClass("btn-state-quiet");        // 开启静音
             $(this).data("volume", oldVol); // 记录当前音量值
             volume_bar.goto(0);                         // 音量归零
         }
     });
-    
-    // 播放功能初始化
-    audioInit();
     
     // 初始化播放列表
     initList(); 
@@ -302,7 +296,7 @@ function download(music) {
 function ajaxShare(music) {
     layer.open({
         title: '歌曲分享'
-        ,content: music.artistsName + ' - ' + music.musicName + ' 的外链地址为：<br>' + music.mp3Url
+        ,content: music.artistsName + ' - ' + music.musicName + ' 的外链地址为：<br><textarea class="share-url" rows="3" onmouseover="this.focus();this.select()">' + music.mp3Url + '</textarea>'
     });
 }
 
@@ -312,6 +306,7 @@ function changeCover(img) {
     if(!img) img = "images/player_cover.png";
     
     var animate = false,imgload = false;
+    img += "?param=186x186";    // 限制封面图为 186*186px
     $("#music-cover").attr("src", img);     // 改变右侧封面
     $(".sheet-item[data-no='1'] .sheet-cover").attr('src', img);    // 改变正在播放列表的图像
     
@@ -354,6 +349,11 @@ function search(str) {
 
 // 向列表中载入某个播放列表
 function loadList(list) {
+    if(musicList[list].isloading === true) {
+        layer.msg('列表读取中...', {icon: 16,shade: 0.01,time: 500});
+        return true;
+    }
+    
     dataBox("list");    // 在主界面显示出播放列表
     
     // 调试信息输出
@@ -514,6 +514,7 @@ function refreshList() {
 function addSheet(no, name, cover) {
     if(!cover) cover = "images/player_cover.png";
     if(!name) name = "读取中...";
+    cover += "?param=186x186";  // 限制封面图像大小
     var html = '<div class="sheet-item" data-no="' + no + '">' +
     '    <img class="sheet-cover" src="' +cover+ '">' +
     '    <p class="sheet-name">' +name+ '</p>' +

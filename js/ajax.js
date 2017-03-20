@@ -1,12 +1,15 @@
 /**************************************************
- * MKOnlinePlayer v2.0
+ * MKOnlinePlayer v2.1
  * Ajax 后台数据交互请求模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-16
+ * 时间：2017-3-20
  *************************************************/
 
 // ajax加载搜索结果
 function ajaxSearch() {
+    if(rem.loadPage == 1) { // 弹出搜索提示
+        var tmpLoading = layer.msg('搜索中', {icon: 16,shade: 0.01});
+    }
     $.ajax({
         type: "POST", 
         url: mkPlayer.api, 
@@ -31,6 +34,7 @@ function ajaxSearch() {
             
             if(rem.loadPage == 1)   // 加载第一页，清空列表
             {
+                layer.close(tmpLoading);    // 关闭加载中动画
                 musicList[0].item = [];
                 rem.mainList.html('');   // 清空列表中原有的元素
                 addListhead();      // 加载列表头
@@ -132,7 +136,7 @@ function ajaxPlayList(lid, id, callback){
     
     // 已经在加载了，跳过
     if(musicList[id].isloading === true) {
-        layer.load(2, {shade: false,time: 500}); //0代表加载的风格，支持0-2
+        layer.msg('列表读取中...', {icon: 16,shade: 0.01,time: 500}); //0代表加载的风格，支持0-2
         return true;
     }
     
@@ -213,7 +217,9 @@ function ajaxPlayList(lid, id, callback){
 // ajax加载歌词
 // 参数：音乐ID，回调函数
 function ajaxLyric(mid, callback) {
-    if(!mid) return false;
+    lyricTip('歌词加载中...');
+    
+    if(!mid) callback('');  // 没有音乐ID，直接返回
     
     $.ajax({
         type: "POST",

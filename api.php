@@ -1,15 +1,15 @@
 <?php
 /**************************************************
- * MKOnlinePlayer v2.0
+ * MKOnlinePlayer v2.1
  * 后台音乐数据抓取模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-16
+ * 时间：2017-3-20
  *************************************************/
 
 // api设置
 $GLOBALS['config'] = array(
-    'proxy' => false,    // 是否使用代理（true/false）
-    'proxyIP' => '222.186.34.84',    // 代理 IP
+    'proxy' => false,    // 是否使用代理（true/false）  海外空间请将这一选项设为 true
+    'proxyIP' => '222.186.34.84',    // 代理 IP     （这里的代理是随手搜的，可能有点慢）
     'proxyPort' => 8998,    // 代理端口
     'proxyUserpwd' => ''    // 代理账号及密码(不需要则留空) 格式为 '用户名:密码'
 );
