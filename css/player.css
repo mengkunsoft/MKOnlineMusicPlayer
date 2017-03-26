@@ -1,9 +1,9 @@
 @charset "utf-8";
 /**************************************************
- * MKOnlinePlayer v2.1
+ * MKOnlinePlayer v2.2
  * 播放器样式表文件
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-20
+ * 时间：2017-3-26
  *************************************************/
 blockquote, body, button, dd, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, hr, html, input, lengend, li, ol, p, pre, td, textarea, th, ul {
     margin: 0;
@@ -55,25 +55,51 @@ a:focus, button:focus, input:focus {
 .clear-fix:after {clear: both; }
 /*滚动条美化*/
 .mCSB_container::-webkit-scrollbar{width:0;height:0}
+#lyric::-webkit-scrollbar{width:0;height:0}
 
 html,body{
     height: 100%;
+    width: 100%;
     background-color: #777970;
+    overflow: hidden;
 }
-#blur {
-    background-color: #212121;
-    opacity:0.3;
-    filter:Alpha(opacity=30);
+body {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ba43a8+0,ea4fce+62,537bad+100&amp;0.38+0,0.17+61,0.8+100 */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjYmE0M2E4IiBzdG9wLW9wYWNpdHk9IjAuMzgiLz4KICAgIDxzdG9wIG9mZnNldD0iNjElIiBzdG9wLWNvbG9yPSIjZTk0ZmNkIiBzdG9wLW9wYWNpdHk9IjAuMTciLz4KICAgIDxzdG9wIG9mZnNldD0iNjIlIiBzdG9wLWNvbG9yPSIjZWE0ZmNlIiBzdG9wLW9wYWNpdHk9IjAuMTkiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzUzN2JhZCIgc3RvcC1vcGFjaXR5PSIwLjgiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+    background: -moz-linear-gradient(-45deg,  rgba(186,67,168,0.38) 0%, rgba(233,79,205,0.17) 61%, rgba(234,79,206,0.19) 62%, rgba(83,123,173,0.8) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(186,67,168,0.38)), color-stop(61%,rgba(233,79,205,0.17)), color-stop(62%,rgba(234,79,206,0.19)), color-stop(100%,rgba(83,123,173,0.8))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(-45deg,  rgba(186,67,168,0.38) 0%,rgba(233,79,205,0.17) 61%,rgba(234,79,206,0.19) 62%,rgba(83,123,173,0.8) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(-45deg,  rgba(186,67,168,0.38) 0%,rgba(233,79,205,0.17) 61%,rgba(234,79,206,0.19) 62%,rgba(83,123,173,0.8) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(-45deg,  rgba(186,67,168,0.38) 0%,rgba(233,79,205,0.17) 61%,rgba(234,79,206,0.19) 62%,rgba(83,123,173,0.8) 100%); /* IE10+ */
+    background: linear-gradient(135deg,  rgba(186,67,168,0.38) 0%,rgba(233,79,205,0.17) 61%,rgba(234,79,206,0.19) 62%,rgba(83,123,173,0.8) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#61ba43a8', endColorstr='#cc537bad',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
+
+    overflow: hidden;
 }
-#blur,#blur-canvas {
+/* 模糊图像层 */
+#blur-img {
+    position: fixed;
+    height: 100%;
+    left: -10%;
+    width: 120%;
+    overflow: hidden;
+}
+/* 图像遮罩层 */
+.blur-mask {
+    display: none;
     position: absolute;
     width: 100%;
     height: 100%;
+    background-color: #000;
+    filter:alpha(opacity=30); 
+    -moz-opacity:0.3; 
+    opacity:0.3;
+    top: 0;
+    left: 0;
     overflow: hidden;
 }
-#blur-canvas{
-    /*z-index: -1;*/
-}
+
 #mkplayer{
     display: none;
 }
@@ -82,6 +108,11 @@ html,body{
     position: absolute;
 }
 .logo {
+    transition: all 0.25s ease;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    -o-transition: all 0.25s ease;
+    -ms-transition: all 0.25s ease;
     display: inline-block;
     font-size: 23px;
     color: #829194;
@@ -318,6 +349,7 @@ html,body{
     background-image: url("../images/icon_list_menu.png");
     float: left;
     margin-left: 10px;
+    cursor: pointer;
 }
 .list-playing .icon-play{
     display: none;
@@ -347,8 +379,8 @@ html,body{
     margin-top: 10px;
 }
 
-/* 列表中点击加载更多 */
-.list-loadmore {
+/* 列表中可以被点击的横条 */
+.list-clickable {
     cursor: pointer;
 }
 
@@ -399,6 +431,7 @@ html,body{
     text-align: center;
     line-height: 40px;
     height: 40px;
+    color: #C5C5C5;
     background-color: rgba(0, 0, 0, 0.12);
 }
 .login-btn {
@@ -652,6 +685,11 @@ html,body{
     top: 50%;
     margin-top: -1px; 
     border-radius: 2px;
+    transition: all 0.25s ease;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    -o-transition: all 0.25s ease;
+    -ms-transition: all 0.25s ease;
 }
 /* 进度条小点 */
 .mkpgb-dot {
@@ -665,9 +703,24 @@ html,body{
     margin-left: -5px; 
     top: 50%; 
     margin-top: -5px;
+    transition: all 0.25s ease;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    -o-transition: all 0.25s ease;
+    -ms-transition: all 0.25s ease;
 }
 /* 进度条禁止点击样式 */
 .mkpgb-locked {
-    cursor: not-allowed;
+    cursor: default;
 }
 
+/* 闪动效果作者：qiuye */
+.dot-move {
+    -webkit-box-shadow: 0 0 20px #fff;
+    -moz-animation: dot-move 3s linear 2s infinite;
+    -webkit-animation: dot-move 3s linear 2s infinite;
+    -o-animation: dot-move 3s linear 2s infinite;
+    -ms-animation: dot-move 3s linear 2s infinite;
+}
+@-webkit-keyframes dot-move{0%{-webkit-box-shadow: 0 0 20px #fff;}25%{-webkit-box-shadow: 0 0 10px #fff;}50%{-webkit-box-shadow: 0 0 0px #fff;}75%{-webkit-box-shadow: 0 0 10px #fff;}100%{-webkit-box-shadow: 0 0 20px #fff;}}
+@keyframes dot-move{0%{-webkit-box-shadow: 0 0 10px #363333;}25%{-webkit-box-shadow: 0 0 7px #363333;}50%{-webkit-box-shadow: 0 0 0px #fff;}75%{-webkit-box-shadow: 0 0 6px #fff;}100%{-webkit-box-shadow: 0 0 10px #363333;}}

@@ -1,4 +1,4 @@
-﻿MKOnlineMusicPlayer V2.1
+﻿MKOnlineMusicPlayer V2.2
 ========
 MKOnlineMusicPlayer 是一款开源的基于网易云音乐api的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人音乐播放列表同步等功能。
 
@@ -15,7 +15,7 @@ MKOnlineMusicPlayer 是一款开源的基于网易云音乐api的在线音乐播
 ### 注意事项
 -----
 #### 关于API文件
-由于网易云音乐官方封锁了国外的访问，因此本播放器的 api.php 在海外的空间上可能无法运行，具体表现为无法搜索歌曲，因此建议在国内空间使用本播放器(其实有个“你懂的”的功能，请自行挖掘)。
+由于网易云音乐官方封锁了国外的访问，因此本播放器的 api.php 在海外的空间上可能无法运行，具体表现为无法搜索歌曲，因此建议在国内空间使用本播放器(其实有个“你懂的”的功能，请 `在 api.php 中` 自行挖掘)。
 
 #### 关于兼容性
 本播放器设计支持 IE9及以上的现代浏览器。并且已在 Chrome、firefox、IE11 等浏览器测试使用正常。
@@ -31,6 +31,20 @@ MKOnlineMusicPlayer 是一款开源的基于网易云音乐api的在线音乐播
 
 ### 更新日志
 -----
+#### v2.2 `2017/3/26`
+- 用户歌单获取时新增加载中动画及遮罩，防止重复加载
+- 修复中等屏幕下鼠标滑过tab边框消失的bug
+- 修复某些情况下第一句歌词无法渲染的bug
+- 修复在IE9下音乐无法播放的bug
+- 更换背景展现方式，整体界面更美观
+- 正在播放和播放历史列表支持一键清空
+- 新增图片加载失败时替换处理
+- 新增小屏幕下为当前显示的tab添加下划线
+- 新增favicon小图标
+- 新增歌曲播放时进度条小点闪烁效果
+- 优化后台数据获取失败时弹出提示
+- 其它的一些细节优化
+
 #### v2.1 `2017/3/20`
 - 紧急修复部分浏览器下切换歌曲造成无限播放失败循环的 BUG
 - 新增点击未加载完的播放列表弹出提示
@@ -100,10 +114,13 @@ MKOnlineMusicPlayer 是一款开源的基于网易云音乐api的在线音乐播
 
 ### 致谢
 -----
-#### 特别感谢 `网易云音乐`
+#### 特别感谢 `网易云音乐`、`QQ音乐网页版`
 
 #### 采用的开源模块
 - **Jquery**：js主流开发框架 [http://jquery.com/](http://jquery.com/)
 - **layer**：一款强大的web弹层组件 [http://layer.layui.com/](http://layer.layui.com/)
 - **mCustomScrollbar**：jQuery自定义滚动条样式插件 [http://manos.malihu.gr/jquery-custom-content-scroller/](http://manos.malihu.gr/jquery-custom-content-scroller/)
+- **background-blur**：跨浏览器磨砂效果背景图片模糊特效插件 [https://msurguy.github.io/background-blur/](https://msurguy.github.io/background-blur/)
 - **Let's Kill IE6**：消灭IE [http://overtrue.me](http://overtrue.me)
+
+##### 在开发过程中，还参照了很多开源 html 播放器的相关代码，在此一并向他们表示感谢！

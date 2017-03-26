@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.0
+ * MKOnlinePlayer v2.2
  * 封装函数及UI交互模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-16
+ * 时间：2017-3-26
  *************************************************/
 // 判断是否是移动设备
 var isMobile = {  
@@ -25,7 +25,7 @@ var isMobile = {
 
 $(function(){
     if(mkPlayer.debug) {
-        console.warn('播放器调试模式已开启，正常使用时请关闭调试模式');
+        console.warn('播放器调试模式已开启，正常使用时请在 js/player.js 中按说明关闭调试模式');
     }
     
     if(!isMobile.any()) {   // 只在非移动设备使用滚动条插件
@@ -179,7 +179,7 @@ $(function(){
                 layer.open({
                     title: '如何获取您的网易云ID？'
                     ,shade: 0.6 //遮罩透明度
-                    ,anim: 1 //0-6的动画形式，-1不开启
+                    ,anim: 0 //0-6的动画形式，-1不开启
                     ,content: 
                     '1、首先<a href="http://music.163.com/" target="_blank">点我(http://music.163.com/)</a>打开网易云音乐官网<br>' +
                     '2、然后点击页面右上角的“登录”，登录您的账号<br>' + 
@@ -193,7 +193,6 @@ $(function(){
                 layer.msg('uid 只能是数字',{anim: 6});
                 return false;
             }
-            // layer.msg('您输入的ID是 '+val);
             layer.close(index);     // 关闭输入框
             ajaxUserList(val);
         });
@@ -201,7 +200,6 @@ $(function(){
     
     // 刷新用户列表
     $("#sheet").on("click",".login-refresh", function() {
-        // rem.uid = null; // 清空记录的uid
         playerSavedata('ulist', '');
         layer.msg('刷新歌单');
         clearUserlist();
@@ -209,7 +207,6 @@ $(function(){
     
     // 退出登录
     $("#sheet").on("click",".login-out", function() {
-        // rem.uid = null; // 清空记录的uid
         playerSavedata('uid', '');
         playerSavedata('ulist', '');
         layer.msg('已退出');
@@ -258,16 +255,36 @@ $(function(){
         var oldVol;     // 之前的音量值
         if($(this).is('.btn-state-quiet')) {
             oldVol = $(this).data("volume");
+            oldVol = oldVol? oldVol: (isMobile.any()? 1: mkPlayer.volume);  // 没找到记录的音量，则重置为默认音量
             $(this).removeClass("btn-state-quiet");     // 取消静音
-            rem.audio.volume = oldVol;
-            volume_bar.goto(oldVol);    // 恢复之前的音量
         } else {
             oldVol = volume_bar.percent;
-            rem.audio.volume = 0;
             $(this).addClass("btn-state-quiet");        // 开启静音
             $(this).data("volume", oldVol); // 记录当前音量值
-            volume_bar.goto(0);                         // 音量归零
+            oldVol = 0;
         }
+        playerSavedata('volume', oldVol); // 存储音量信息
+        volume_bar.goto(oldVol);    // 刷新音量显示
+        if(rem.audio !== undefined) rem.audio.volume = oldVol;  // 应用音量
+    });
+    
+    if(mkPlayer.coverbg === true) { // 开启了封面背景
+        // 背景图片初始化
+        $('#blur-img').backgroundBlur({
+            // imageURL : '', // URL to the image that will be used for blurring
+            blurAmount : 50, // 模糊度
+            imageClass : 'blured-img', // 背景区应用样式
+            overlayClass : 'blur-mask', // 覆盖背景区class，可用于遮罩或额外的效果
+            // duration: 1000, // 图片淡出时间
+            endOpacity : 1 // 图像最终的不透明度
+        });
+        
+        $('.blur-mask').fadeIn(1000);   // 遮罩层淡出
+    }
+    
+    // 图片加载失败处理
+    $('img').error(function(){
+        $(this).attr('src', 'images/player_cover.png');
     });
     
     // 初始化播放列表
@@ -310,33 +327,26 @@ function changeCover(img) {
     $("#music-cover").attr("src", img);     // 改变右侧封面
     $(".sheet-item[data-no='1'] .sheet-cover").attr('src', img);    // 改变正在播放列表的图像
     
-    // 图像加载完成
-    $("#music-cover").load(function(){
-        if(animate) {   // 渐变动画也已完成
-            blurCover();    // 替换图像并淡出
-        } else {
-            imgload = true;     // 告诉下面的函数，图片已准备好
-        }
-    });
-    
-    $("#blur-canvas").fadeOut(1000);    // 先隐藏图片，方便切换时“偷梁换柱”
-    
-    // 渐变动画
-    $("#blur").animate({opacity: "0.7"}, 1000, function(){
-        if(imgload) {   // 如果图片已经加载好了
-            blurCover();    // 替换图像并淡出
-        } else {
-            animate = true;     // 等待图像加载完
-        }
-    });
-}
-
-// 背景更换特效
-function blurCover() {
-    var bCanvas = $("#blur-canvas")[0].getContext("2d");
-    bCanvas.drawImage($("#music-cover")[0], 10, 10, 20, 20, 0, 0, $("body").width(), $("body").height());
-    $("#blur-canvas").fadeIn(1000);
-    $("#blur").animate({opacity:"0.3"}, 1500); // 背景更换特效
+    if(mkPlayer.coverbg === true) { // 开启了封面背景
+        $("#music-cover").load(function(){
+            if(animate) {   // 渐变动画也已完成
+                $('#blur-img').backgroundBlur(img);    // 替换图像并淡出
+                $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
+            } else {
+                imgload = true;     // 告诉下面的函数，图片已准备好
+            }
+        });
+        
+        // 渐变动画
+        $("#blur-img").animate({opacity: "0.2"}, 1000, function(){
+            if(imgload) {   // 如果图片已经加载好了
+                $('#blur-img').backgroundBlur(img);    // 替换图像并淡出
+                $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
+            } else {
+                animate = true;     // 等待图像加载完
+            }
+        });
+    }
 }
 
 // 搜索功能
@@ -379,6 +389,10 @@ function loadList(list) {
     if(i == 0) {
         addListbar("nodata");   // 列表中没有数据
     } else {
+        if(list == 1 || list == 2) {    // 历史记录和正在播放列表允许清空
+            addListbar("clear");    // 清空列表
+        }
+        
         if(rem.playlist === undefined) {
             // 未曾播放过
             if(mkPlayer.autoplay == true) pause();  // 设置了自动播放，则自动播放
@@ -417,25 +431,29 @@ function addItem(no, name, auth, album) {
 }
 
 // 加载列表中的提示条
-// 参数：类型（more、nomore、loading、nodata）
+// 参数：类型（more、nomore、loading、nodata、clear）
 function addListbar(types) {
     var html
     switch(types) {
         case "more":    // 还可以加载更多
-            html = '<div class="list-item text-center list-loadmore" title="点击加载更多数据" id="list-foot">点击加载更多...</div>';
+            html = '<div class="list-item text-center list-loadmore list-clickable" title="点击加载更多数据" id="list-foot">点击加载更多...</div>';
         break;
         
         case "nomore":  // 数据加载完了
             html = '<div class="list-item text-center" id="list-foot">全都加载完了</div>';
         break;
         
-        case "loading":
+        case "loading": // 加载中
             html = '<div class="list-item text-center" id="list-foot">播放列表加载中...</div>';
         break;
         
-        case "nodata":
+        case "nodata":  // 列表中没有内容
             html = '<div class="list-item text-center" id="list-foot">可能是个假列表，什么也没有</div>';
-        break
+        break;
+        
+        case "clear":   // 清空列表
+            html = '<div class="list-item text-center list-clickable" id="list-foot" onclick="clearDislist();">清空列表</div>';
+        break;
     }
     rem.mainList.append(html);
 }
@@ -500,7 +518,7 @@ function refreshList() {
     if(rem.paused !== true) {   // 没有暂停
         for(var i=0; i<musicList[rem.dislist].item.length; i++) {
             // 与正在播放的歌曲 id 相同
-            if(musicList[rem.dislist].item[i].musicId == musicList[1].item[rem.playid].musicId) {
+            if((musicList[rem.dislist].item[i].musicId !== undefined) && (musicList[rem.dislist].item[i].musicId == musicList[1].item[rem.playid].musicId)) {
                 $(".list-item[data-no='" + i + "']").addClass("list-playing");  // 添加正在播放样式
                 // $(".list-item:eq(" + (i + 1) + ")").addClass("list-playing");  // 添加正在播放样式
                 return true;    // 一般列表中只有一首，找到了赶紧跳出
@@ -543,28 +561,39 @@ function sheetBar() {
 // 选择要显示哪个数据区
 // 参数：要显示的数据区（list、sheet、player）
 function dataBox(choose) {
+    $('.btn-box .active').removeClass('active');
     switch(choose) {
         case "list":    // 显示播放列表
             if($(".btn[data-action='player']").css('display') !== 'none') {
                 $("#player").hide();
+            } else if ($("#player").css('display') == 'none') {
+                $("#player").fadeIn();
             }
             $("#main-list").fadeIn();
             $("#sheet").fadeOut();
-            
+            if(rem.dislist == 1) {  // 正在播放
+                $(".btn[data-action='playing']").addClass('active');
+            } else if(rem.dislist == 0) {  // 搜索
+                $(".btn[data-action='search']").addClass('active');
+            }
         break;
         
         case "sheet":   // 显示专辑
             if($(".btn[data-action='player']").css('display') !== 'none') {
                 $("#player").hide();
+            } else if ($("#player").css('display') == 'none') {
+                $("#player").fadeIn();
             }
             $("#sheet").fadeIn();
             $("#main-list").fadeOut();
+            $(".btn[data-action='sheet']").addClass('active');
         break;
         
         case "player":  // 显示播放器
             $("#player").fadeIn();
             $("#sheet").fadeOut();
             $("#main-list").fadeOut();
+            $(".btn[data-action='player']").addClass('active');
         break;
     }
 }
@@ -667,6 +696,19 @@ function clearUserlist() {
     // 刷新列表显示
     clearSheet();
     initList();
+}
+
+// 清空当前显示的列表
+function clearDislist() {
+    musicList[rem.dislist].item.length = 0;  // 清空内容
+    if(rem.dislist == 1) {  // 正在播放列表
+        playerSavedata('playing', '');  // 清空本地记录
+        $(".sheet-item[data-no='1'] .sheet-cover").attr('src', 'images/player_cover.png');    // 恢复正在播放的封面
+    } else if(rem.dislist == 2) {   // 播放记录
+        playerSavedata('his', '');  // 清空本地记录
+    }
+    layer.msg('列表已被清空');
+    dataBox("sheet");    // 在主界面显示出音乐专辑
 }
 
 // 刷新播放列表，为正在播放的项添加正在播放中的标识

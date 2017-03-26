@@ -1,18 +1,21 @@
 /**************************************************
- * MKOnlinePlayer v2.0
+ * MKOnlinePlayer v2.2
  * 播放器主功能模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-16
+ * 时间：2017-3-26
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
     api: "api.php", // api地址
-    wd: "陈奕迅",   // 显示在搜索栏的搜索词
+    wd: "周杰伦",   // 显示在搜索栏的搜索词
     loadcount: 20,  // 搜索结果一次加载多少条
     defaultlist: 3,    // 默认要显示的播放列表编号
     autoplay: false,    // 是否自动播放(true/false) *在手机端可能无法自动播放
+    coverbg: true,      // 是否开启封面背景(true/false) *开启后会有些卡
+    dotshine: false,    // 是否开启播放进度条的小点闪动效果[不支持IE](true/false) *开启后会有些卡
     volume: 0.6,        // 默认音量值(0~1之间)
-    debug: true   // 是否开启调试模式(true/false)
+    version: 'v2.2',    // 播放器当前版本号(仅供调试)
+    debug: false   // 是否开启调试模式(true/false)
 };
 
 
@@ -60,6 +63,7 @@ function audioPlay() {
     rem.paused = false;     // 更新状态（未暂停）
     refreshList();      // 刷新状态，显示播放的波浪
     $(".btn-play").addClass("btn-state-paused");        // 恢复暂停
+    if(mkPlayer.dotshine === true) $("#music-progress .mkpgb-dot").addClass("dot-move");   // 小点闪烁效果
 }
 
 // 暂停
@@ -69,6 +73,8 @@ function audioPause() {
     $(".list-playing").removeClass("list-playing");        // 移除其它的正在播放
     
     $(".btn-play").removeClass("btn-state-paused");     // 取消暂停
+    
+    $("#music-progress .dot-move").removeClass("dot-move");   // 小点闪烁效果
 }
 
 // 播放上一首歌
@@ -206,7 +212,9 @@ function play(music) {
     ajaxLyric(music.musicId, lyricCallback);     // ajax加载歌词
     $('audio').remove();    // 移除之前的audio
     
-    var newaudio = $('<audio>').html('<source src="'+ music.mp3Url +'">').appendTo('html');
+    var newaudio = $('<audio><source src="'+ music.mp3Url +'"></audio>').appendTo('body');
+    // 以下这种方式在 IE9 下无效...
+    // var newaudio = $('<audio>').html('<source src="'+ music.mp3Url +'">').appendTo('body');
     rem.audio = newaudio[0];
     // 应用初始音量
     rem.audio.volume = volume_bar.percent;
@@ -218,24 +226,27 @@ function play(music) {
     rem.audio.addEventListener('error', audioErr);   // 播放器错误处理
     
     rem.audio.play();
+    music_bar.lock(false);  // 取消进度条锁定
 }
 
 // 我的要求并不高，保留这一句版权信息可好？
 // 保留了，你不会损失什么；而保留版权，是对作者最大的尊重。
-console.info('欢迎使用 MKOnlinePlayer!\n当前版本： v2.1 \n作者：mengkun(http://mkblog.cn)\n歌曲来源于：网易云音乐(http://music.163.com/)\nGithub：https://github.com/mengkunsoft/MKOnlineMusicPlayer');
+console.info('欢迎使用 MKOnlinePlayer!\n当前版本：'+mkPlayer.version+' \n作者：mengkun(http://mkblog.cn)\n歌曲来源于：网易云音乐(http://music.163.com/)\nGithub：https://github.com/mengkunsoft/MKOnlineMusicPlayer');
 
 // 音乐进度条拖动回调函数
 function mBcallback(newVal) {
     var newTime = rem.audio.duration * newVal;
     // 应用新的进度
     rem.audio.currentTime = newTime;
-    refreshLyric(newTime);
+    refreshLyric(newTime);  // 强制滚动歌词到当前进度
 }
 
 // 音量条变动回调函数
 // 参数：新的值
 function vBcallback(newVal) {
-    rem.audio.volume = newVal;
+    if(rem.audio !== undefined) {   // 音频对象已加载则立即改变音量
+        rem.audio.volume = newVal;
+    }
     
     if($(".btn-quiet").is('.btn-state-quiet')) {
         $(".btn-quiet").removeClass("btn-state-quiet");     // 取消静音
@@ -250,9 +261,13 @@ function vBcallback(newVal) {
 var initProgress = function(){  
     // 初始化播放进度条
     music_bar = new mkpgb("#music-progress", 0, mBcallback);
+    music_bar.lock(true);   // 未播放时锁定不让拖动
     // 初始化音量设定
     var tmp_vol = playerReaddata('volume');
-    tmp_vol = tmp_vol? tmp_vol: (isMobile.any()? 1: mkPlayer.volume);
+    tmp_vol = (tmp_vol != null)? tmp_vol: (isMobile.any()? 1: mkPlayer.volume);
+    if(tmp_vol < 0) tmp_vol = 0;    // 范围限定
+    if(tmp_vol > 1) tmp_vol = 1;
+    if(tmp_vol == 0) $(".btn-quiet").addClass("btn-state-quiet"); // 添加静音样式
     volume_bar = new mkpgb("#volume-progress", tmp_vol, vBcallback);
 };  
 
@@ -323,7 +338,7 @@ mkpgb.prototype = {
         if(percent < 0) percent = 0;
         this.percent = percent;
         $(this.bar + " .mkpgb-dot").css("left", (percent*100) +"%"); 
-        $(this.bar + " .mkpgb-cur").stop().animate({width: (percent*100)+"%"}, 200);
+        $(this.bar + " .mkpgb-cur").css("width", (percent*100)+"%");
         return true;
     },
     // 锁定进度条

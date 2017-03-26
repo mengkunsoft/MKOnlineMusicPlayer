@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.1
+ * MKOnlinePlayer v2.2
  * 歌词解析及滚动模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-20
+ * 时间：2017-3-26
  *************************************************/
  
 var lyricArea = $("#lyric");    // 歌词显示容器
@@ -23,7 +23,9 @@ function lyricCallback(str) {
     }
     
     lyricArea.html('');     // 清空歌词区域的内容
-    lyricArea.scrollLeft(0);    // 滚动到顶部
+    lyricArea.scrollTop(0);    // 滚动到顶部
+    
+    rem.lastLyric = -1;
     
     // 显示全部歌词
     var i = 0;
@@ -72,11 +74,12 @@ function scrollLyric(time) {
     $(".lrc-item[data-no='" + i + "']").addClass("lplaying");    // 加上正在播放样式
     
     var scroll = (lyricArea.children().height() * i) - ($(".lyric").height() / 2); 
-    lyricArea.stop().animate({scrollTop: scroll}, 300);  // 平滑滚动到当前歌词位置
+    lyricArea.stop().animate({scrollTop: scroll}, 1000);  // 平滑滚动到当前歌词位置(更改这个数值可以改变歌词滚动速度，单位：毫秒)
     
 }
 
 // 解析歌词
+// 这一函数来自 https://github.com/TivonJJ/html5-music-player
 // 参数：原始歌词文件
 function parseLyric(lrc) {
     if(lrc === '') return '';

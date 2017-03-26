@@ -14,7 +14,7 @@
     <meta name="x5-fullscreen" content="true"><!--QQ强制全屏-->
     <meta name="x5-page-mode" content="app"><!--QQ应用模式-->
     
-    <title>MKOnlinePlayer v2.1</title>
+    <title>MKOnlinePlayer v2.2</title>
     <meta name="description" content="一款开源的基于网易云音乐api的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人音乐播放列表同步等功能。"/>
     <meta name="keywords" content="孟坤播放器,在线音乐播放器,MKOnlinePlayer,网易云音乐,音乐api,音乐播放器源代码"/>
     
@@ -22,6 +22,9 @@
     <!--[if lte IE 8]>
         <script>window.location.href="plugns/killie/"</script>
     <![endif]--> 
+    
+    <!-- favicon图标 -->
+    <link rel="shortcut icon" href="favicon.ico">
     
     <!-- jQuery文件 -->
     <script src="js/jquery.min.js"></script>
@@ -38,13 +41,11 @@
 </head>
 <body>
 
-<!-- 模糊化背景 -->
-<canvas id="blur-canvas"></canvas>
-<div id="blur"></div>
+<div id="blur-img"></div>
 
 <!-- 头部logo -->
 <div class="header">
-    <div class="logo" title="Version 2.1; Based on 163music; Powered by Mengkun">
+    <div class="logo" title="Version 2.2; Based on 163music; Powered by Mengkun">
         ♫ MKOnlinePlayer
     </div>
 </div>  <!--class="header"-->
@@ -141,6 +142,9 @@
 
 <!-- 滚动条美化插件 -->
 <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+
+<!-- 背景模糊化插件 -->
+<script src="js/background-blur.min.js"></script>
 
 <!-- 站长统计代码 -->
 <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan style='display: none' id='cnzz_stat_icon_1261525999'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261525999' type='text/javascript'%3E%3C/script%3E"));</script>
