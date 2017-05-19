@@ -11,7 +11,7 @@ function ajaxSearch() {
         var tmpLoading = layer.msg('搜索中', {icon: 16,shade: 0.01});
     }
     $.ajax({
-        type: "POST", 
+        type: mkPlayer.method, 
         url: mkPlayer.api, 
         data: "types=search&count=" + mkPlayer.loadcount + "&pages=" + rem.loadPage + "&name=" + rem.wd,
         dataType : "jsonp",
@@ -56,8 +56,8 @@ function ajaxSearch() {
                 no ++;
                 tempItem =  {
                     musicName: jsonData.result.songs[i].name,  // 音乐名字
-                    artistsName: jsonData.result.songs[i].artists[0].name, // 艺术家名字
-                    albumName: jsonData.result.songs[i].album.name,    // 专辑名字
+                    artistsName: jsonData.result.songs[i].ar[0].name, // 艺术家名字
+                    albumName: jsonData.result.songs[i].al.name,    // 专辑名字
                     albumPic: null,    // 专辑图片
                     musicId: jsonData.result.songs[i].id,  // 网易云音乐ID
                     mp3Url: null // mp3链接
@@ -101,18 +101,13 @@ function ajaxUrl(music, callback)
     }
     
     $.ajax({ 
-        type: "POST", 
+        type: mkPlayer.method, 
         url: mkPlayer.api,
         data: "types=musicInfo&id=" + music.musicId,
         dataType : "jsonp",
         success: function(jsonData){
             var mp3Url, picUrl;
-            if(jsonData.code == 200 || typeof(jsonData.songs[0].mp3Url) !== undefined){
-                mp3Url = urlHandle(jsonData.songs[0].mp3Url);  // 获取音乐链接
-                if(typeof(jsonData.songs[0].picUrl) !== undefined) {
-                    picUrl = jsonData.songs[0].album.picUrl;    // 获取音乐图片
-                }
-            }
+            mp3Url = jsonData.url;  // 获取音乐链接
             
             // 调试信息输出
             if(mkPlayer.debug) {
@@ -123,7 +118,7 @@ function ajaxUrl(music, callback)
             if(!picUrl) picUrl = null;
             
             music.mp3Url = mp3Url;    // 记录结果
-            music.albumPic = picUrl;
+            // music.albumPic = picUrl;
             
             updateMinfo(music); // 更新音乐信息
             
@@ -151,7 +146,7 @@ function ajaxPlayList(lid, id, callback){
     musicList[id].isloading = true; // 更新状态：列表加载中
     
     $.ajax({
-        type: "POST", 
+        type: mkPlayer.method, 
         url: mkPlayer.api, 
         data: "types=playlist&id=" + lid,
         dataType : "jsonp",
@@ -162,23 +157,29 @@ function ajaxPlayList(lid, id, callback){
             // 存储歌单信息
             var tempList = {
                 id: lid,    // 列表的网易云 id
-                name: jsonData.result.name,   // 列表名字
-                cover: jsonData.result.coverImgUrl,   // 列表封面
-                creatorName: jsonData.result.creator.nickname,   // 列表创建者名字
-                creatorAvatar: jsonData.result.creator.avatarUrl,   // 列表创建者头像
+                name: jsonData.playlist.name,   // 列表名字
+                cover: jsonData.playlist.coverImgUrl,   // 列表封面
+                creatorName: jsonData.playlist.creator.nickname,   // 列表创建者名字
+                creatorAvatar: jsonData.playlist.creator.avatarUrl,   // 列表创建者头像
                 item: []
             };
             
-            if(typeof jsonData.result.tracks !== undefined || jsonData.result.tracks.length !== 0) {
+            if(jsonData.playlist.coverImgUrl !== '') {
+                tempList.cover = jsonData.playlist.coverImgUrl;
+            } else {
+                tempList.cover = musicList[id].cover;
+            }
+            
+            if(typeof jsonData.playlist.tracks !== undefined || jsonData.playlist.tracks.length !== 0) {
                 // 存储歌单中的音乐信息
-                for (var i = 0; i < jsonData.result.tracks.length; i++) {
+                for (var i = 0; i < jsonData.playlist.tracks.length; i++) {
                     tempList.item[i] =  {
-                        musicName: jsonData.result.tracks[i].name,  // 音乐名字
-                        artistsName: jsonData.result.tracks[i].artists[0].name, // 艺术家名字
-                        albumName: jsonData.result.tracks[i].album.name,    // 专辑名字
-                        albumPic: jsonData.result.tracks[i].album.picUrl,    // 专辑图片
-                        musicId: jsonData.result.tracks[i].id,  // 网易云音乐ID
-                        mp3Url: urlHandle(jsonData.result.tracks[i].mp3Url) // mp3链接
+                        musicName: jsonData.playlist.tracks[i].name,  // 音乐名字
+                        artistsName: jsonData.playlist.tracks[i].ar[0].name, // 艺术家名字
+                        albumName: jsonData.playlist.tracks[i].al.name,    // 专辑名字
+                        albumPic: jsonData.playlist.tracks[i].al.picUrl,    // 专辑图片
+                        musicId: jsonData.playlist.tracks[i].id,  // 网易云音乐ID
+                        mp3Url: null//urlHandle(jsonData.playlist.tracks[i].mp3Url) // mp3链接
                     };
                 }
             }
@@ -231,7 +232,7 @@ function ajaxLyric(mid, callback) {
     if(!mid) callback('');  // 没有音乐ID，直接返回
     
     $.ajax({
-        type: "POST",
+        type: mkPlayer.method,
         url: mkPlayer.api,
         data: "types=lyric&id=" + mid,
         dataType : "jsonp",
@@ -270,7 +271,7 @@ function ajaxUserList(uid)
 {
     var tmpLoading = layer.msg('加载中...', {icon: 16,shade: 0.01});
     $.ajax({
-        type: "POST",
+        type: mkPlayer.method,
         url: mkPlayer.api,
         data: "types=userlist&uid=" + uid,
         dataType : "jsonp",
@@ -324,6 +325,7 @@ function ajaxUserList(uid)
         },   //success
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             layer.msg('歌单同步失败 - ' + XMLHttpRequest.status);
+            console.log(XMLHttpRequest + textStatus + errorThrown);
         }   // error
     });//ajax
     return true;

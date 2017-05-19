@@ -532,7 +532,7 @@ function refreshList() {
 function addSheet(no, name, cover) {
     if(!cover) cover = "images/player_cover.png";
     if(!name) name = "读取中...";
-    cover += "?param=186x186";  // 限制封面图像大小
+    // cover += "?param=186x186";  // 限制封面图像大小
     var html = '<div class="sheet-item" data-no="' + no + '">' +
     '    <img class="sheet-cover" src="' +cover+ '">' +
     '    <p class="sheet-name">' +name+ '</p>' +
@@ -728,11 +728,9 @@ function refreshSheet() {
 function playerSavedata(key, data) {
     key = 'mkPlayer_' + key;    // 添加前缀，防止串用
     data = JSON.stringify(data);
-    //存储，IE6~7 cookie 其他浏览器HTML5本地存储
+    // 存储，IE6~7 不支持HTML5本地存储
     if (window.localStorage) {
         localStorage.setItem(key, data);	
-    } else {
-        Cookie.write(key, data);	
     }
 }
 
@@ -740,6 +738,7 @@ function playerSavedata(key, data) {
 // 参数：键值
 // 返回：数据
 function playerReaddata(key) {
+    if(!window.localStorage) return '';
     key = 'mkPlayer_' + key;
-    return JSON.parse(window.localStorage? localStorage.getItem(key): Cookie.read(key));
+    return JSON.parse(localStorage.getItem(key));
 }

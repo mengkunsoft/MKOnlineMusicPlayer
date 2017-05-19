@@ -1,8 +1,17 @@
-﻿MKOnlineMusicPlayer V2.2
+﻿MKOnlineMusicPlayer V2.21
 ========
 MKOnlineMusicPlayer 是一款开源的基于网易云音乐api的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人音乐播放列表同步等功能。
 
 前端界面参照 QQ 音乐网页版进行布局，同时采用了流行的响应式设计，无论是在PC端还是在手机端，均能给您带来原生 app 般的使用体验。
+
+### 界面欣赏
+-----
+![主界面(电脑端)](https://ws2.sinaimg.cn/large/006srDtYly1ffqxu72p2zj311y0hlqcl.jpg)
+
+![播放列表界面(电脑端)](https://ws2.sinaimg.cn/large/006srDtYly1ffqxyzownkj311x0hiamq.jpg)
+
+![歌曲搜索与播放](https://ws2.sinaimg.cn/large/006srDtYly1ffqxzlc2kkj311y0hjwqa.jpg)
+
 
 ### 相关链接
 -----
@@ -29,8 +38,31 @@ MKOnlineMusicPlayer 是一款开源的基于网易云音乐api的在线音乐播
 #### 其它
 作者很忙，非诚勿扰。欢迎提交 BUG 及好的建议，不欢迎一上来就问一些基础的东西及唠东唠西。
 
+### 待解决的问题
+-----
+- 降低模糊背景内存占用，解决移动设备下卡顿问题；
+- 对其它音乐源(虾米、QQ)的支持
+- IOS 设备播放失败问题
+- 高音质音乐下载功能
+- 超长歌词显示定位错乱问题
+- 歌曲播放模式切换(单曲循环、随机播放、列表循环)功能
+- 移动端歌曲列表直接下载歌曲功能
+
+### 打赏
+-----
+- 解决上面这些问题，需要花费很多时间与精力。支持项目继续完善下去，你也可以贡献一份力量！
+- 有了打赏，也就会有更新的动力！ :blush:
+
+   ![](https://ws3.sinaimg.cn/large/006srDtYly1ffqy973ijwj30hk05atam.jpg)
+
 ### 更新日志
 -----
+#### v2.21 `2017/5/19`
+- 临时修复 API 失效问题
+- 新增歌曲超时检测，播放超时则自动播放下一首
+- 新增设置数据传输方式(GET/POST)
+- (这是一个临时版本，虽然解决了一部分API失效的问题，但是还是存在一些问题。剩下的问题将在之后的 v2.3 正式版中解决)
+
 #### v2.2 `2017/3/26`
 - 用户歌单获取时新增加载中动画及遮罩，防止重复加载
 - 修复中等屏幕下鼠标滑过tab边框消失的bug
@@ -118,6 +150,7 @@ MKOnlineMusicPlayer 是一款开源的基于网易云音乐api的在线音乐播
 
 #### 采用的开源模块
 - **Jquery**：js主流开发框架 [http://jquery.com/](http://jquery.com/)
+- **Meting**：强大的音乐API框架[https://github.com/metowolf/Meting](https://github.com/metowolf/Meting)
 - **layer**：一款强大的web弹层组件 [http://layer.layui.com/](http://layer.layui.com/)
 - **mCustomScrollbar**：jQuery自定义滚动条样式插件 [http://manos.malihu.gr/jquery-custom-content-scroller/](http://manos.malihu.gr/jquery-custom-content-scroller/)
 - **background-blur**：跨浏览器磨砂效果背景图片模糊特效插件 [https://msurguy.github.io/background-blur/](https://msurguy.github.io/background-blur/)
