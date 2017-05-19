@@ -1,20 +1,21 @@
 /**************************************************
- * MKOnlinePlayer v2.2
+ * MKOnlinePlayer v2.21
  * 播放器主功能模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-26
+ * 时间：2017-5-19
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
     api: "api.php", // api地址
     wd: "周杰伦",   // 显示在搜索栏的搜索词
     loadcount: 20,  // 搜索结果一次加载多少条
+    method: "POST",     // 数据传输方式(POST/GET)
     defaultlist: 3,    // 默认要显示的播放列表编号
     autoplay: false,    // 是否自动播放(true/false) *在手机端可能无法自动播放
     coverbg: true,      // 是否开启封面背景(true/false) *开启后会有些卡
-    dotshine: false,    // 是否开启播放进度条的小点闪动效果[不支持IE](true/false) *开启后会有些卡
+    dotshine: true,    // 是否开启播放进度条的小点闪动效果[不支持IE](true/false) *开启后会有些卡
     volume: 0.6,        // 默认音量值(0~1之间)
-    version: 'v2.2',    // 播放器当前版本号(仅供调试)
+    version: "v2.21",    // 播放器当前版本号(仅供调试)
     debug: false   // 是否开启调试模式(true/false)
 };
 
@@ -213,8 +214,7 @@ function play(music) {
     $('audio').remove();    // 移除之前的audio
     
     var newaudio = $('<audio><source src="'+ music.mp3Url +'"></audio>').appendTo('body');
-    // 以下这种方式在 IE9 下无效...
-    // var newaudio = $('<audio>').html('<source src="'+ music.mp3Url +'">').appendTo('body');
+    
     rem.audio = newaudio[0];
     // 应用初始音量
     rem.audio.volume = volume_bar.percent;
@@ -225,8 +225,28 @@ function play(music) {
     rem.audio.addEventListener('ended', nextMusic);   // 播放结束
     rem.audio.addEventListener('error', audioErr);   // 播放器错误处理
     
+    // $("#player").bind("ended", function () {
+    
+    // });
+    
     rem.audio.play();
+    
+    // 设置 5s 后为歌曲超时，自动切换下一首
+    window.setTimeout("delayCheck()", 5000);
+    
     music_bar.lock(false);  // 取消进度条锁定
+}
+
+// 歌曲播放超时检测
+function delayCheck() {
+    if(isNaN(rem.audio.duration) || rem.audio.duration === undefined || rem.audio.duration ===0) {
+        audioErr();
+    } else {
+        // 调试信息输出
+        if(mkPlayer.debug) {
+            console.log('超时检测 - 歌曲播放正常');
+        }
+    }
 }
 
 // 我的要求并不高，保留这一句版权信息可好？
