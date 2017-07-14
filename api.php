@@ -10,6 +10,7 @@ require_once('plugns/Meting.php');
 
 use Metowolf\Meting;
 
+if(isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https') define('ISHTTPS', true);#检测HTTPS请求
 
 $API = new Meting('netease');
 
@@ -183,6 +184,7 @@ function getParam($key,$default='')
 function echojson($data)    //json和jsonp通用
 {
     header("Content-type: application/json");
+    if(defined('ISHTTPS') && ISHTTPS === true) $data = str_replace('http:\/\/', 'https:\/\/', $data);#如果为https请求则替换http为https
     $callback = getParam('callback');
     if($callback != "") //输出jsonp格式
     {
