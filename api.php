@@ -161,7 +161,7 @@ switch($types)
         if($pages<1) $pages=1;    //纠正错误的值
         $offset= ($pages-1) * $limit;     //偏移量
         
-        $data = $API->search($s, $pages, $limit);
+        $data = $API->search($s, $offset + 1, $limit);
         
         echojson($data);
 }
