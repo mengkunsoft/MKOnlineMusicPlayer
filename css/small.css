@@ -16,79 +16,17 @@
     .center {
         top: 0;
     }
-    .btn {
-        padding: 6px 8px;
-    }
-    .btn-bar {
-        right: 0;
-        z-index: 999;
-    }
+    
     /* 调出播放器按钮 */
     .btn[data-action='player'] {
         display: inline-block;
     }
-    /*隐藏右侧歌词及封面*/
-    .player {
-        display: none;
-        width: 100%;
-    }
-    .cover {
-        margin-top: 60px;
-    }
-    #lyric {
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
-    .lyric {
-        top: 260px;
-    }
     
-    
-    /*数据区域占满整个屏幕*/
-    .data-area {
-        right: 0;
-    }
-    /*音乐名字拉长*/
-    .music-name {
-        margin-right: 30%;
-    }
-    /*专辑信息不显示*/
-    .music-album {
-        display: none;
-    }
-    /*歌手名字*/
-    .auth-name {
-        width: 30%;
-    }
-    /*列表菜单不显示*/
-    .list-menu {
-        display: none!important;
-    }
-    .music-name-cult {
-        padding-right: 0!important;
-    }
-    /*控制按钮区域缩小*/
-    .con-btn {
-        width: 100px;
-    }
-    /*进度条调整*/
-    .progress {
-        width: auto;
-        margin-left: 110px;
-        margin-right: 10px;
-        height: 100%;
-        position: relative;
-    }
-    /*音量控制区域隐藏*/
-    .vol {
-        display: none;
-    }
-}
-
-/* 小于 500px 采用这个样式 */
-@media screen and (max-width: 500px) {
+    /* 按钮工具条区域 */
     .btn-bar {
         height: 35px;
+        right: 0;
+        z-index: 999;
     }
     .btn-box {
         background-color: #000;
@@ -120,11 +58,101 @@
         border-bottom: 3px solid #A2A0A0;
         margin-top: -3px;
     }
-    .center {
-        bottom: 60px;
-    }
+    
+    /* 中部容器区域 */
     .data-area {
         top: 40px;
+    }
+    
+    /*数据区域占满整个屏幕*/
+    .data-area {
+        right: 0;
+    }
+    
+    
+    /*列表菜单不显示*/
+    .list-menu {
+        display: none!important;
+    }
+    .music-name-cult {
+        padding-right: 0!important;
+    }
+    
+    /* 专辑区域腾出位置 */
+    .music-album {
+        margin-right: 30px;
+    }
+    /* 小屏幕的列表菜单 */
+    .list-mobile-menu {
+        position: absolute;
+        display: block;
+        width: 30px;
+        height: 30px;
+        background-image: url(../images/player.png);
+        background-position: -30px -365px;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        cursor: pointer;
+    }
+    
+    /*控制按钮区域缩小*/
+    .con-btn {
+        width: 100px;
+    }
+    /*进度条调整*/
+    .progress {
+        width: auto;
+        margin-left: 110px;
+        margin-right: 10px;
+        height: 100%;
+        position: relative;
+    }
+    /*音量控制区域隐藏*/
+    .vol {
+        display: none;
+    }
+    
+    /*隐藏右侧歌词及封面*/
+    .player {
+        display: none;
+        width: 100%;
+    }
+    .cover {
+        margin-top: 60px;
+    }
+    #lyric {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .lyric {
+        top: 260px;
+    }
+}
+
+/* 小于 620px 采用这个样式 */
+@media screen and (max-width: 620px) {
+    /*专辑信息不显示*/
+    .music-album {
+        display: none;
+    }
+    /*歌手名字*/
+    .auth-name {
+        width: 35%;
+        padding-right: 30px;
+        box-sizing: border-box;
+    }
+    /*音乐名字拉长*/
+    .music-name {
+        margin-right: 35%;
+    }
+}
+
+/* 小于 500px 采用这个样式 */
+@media screen and (max-width: 500px) {
+    .center {
+        bottom: 60px;
     }
     /* 歌单封面 */
     .sheet-item {   

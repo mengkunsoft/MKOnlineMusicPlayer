@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.0
+ * MKOnlinePlayer v2.3
  * 播放列表配置模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-16
+ * 时间：2017-9-1
  *************************************************/
 // 建议修改前先备份一下
 // 获取 歌曲的网易云音乐ID 或 网易云歌单ID 的方法：
@@ -29,7 +29,7 @@ var musicList = [
     // 预留列表：播放历史
     {
         name: "播放历史",   // 播放列表名字
-        cover: "",          // 播放列表封面
+        cover: "images/history.png",          // 播放列表封面
         creatorName: "",        // 列表创建者名字
         creatorAvatar: "",      // 列表创建者头像
         item: []
@@ -60,28 +60,86 @@ var musicList = [
     },
     // 自定义列表教程开始！
     // 方式一：手动创建列表并添加歌曲信息
+    // 温馨提示：腾讯、酷狗、百度音乐源的外链有效期较短，因此 url 值应该设置为空，以让程序临时抓取
     {
         name: "自定义列表",   // 播放列表名字
-        cover: "http://p3.music.126.net/34YW1QtKxJ_3YnX9ZzKhzw==/2946691234868155.jpg", // 播放列表封面图像
+        cover: "https://p3.music.126.net/34YW1QtKxJ_3YnX9ZzKhzw==/2946691234868155.jpg", // 播放列表封面图像
         creatorName: "",        // 列表创建者名字(暂时没用到，可空)
         creatorAvatar: "",      // 列表创建者头像(暂时没用到，可空)
         item: [                 // 这里面放歌曲
             {
-                musicName: "成都",      // 音乐名字
-                artistsName: "赵雷",    // 歌手名字
-                albumName: "成都",      // 歌曲专辑
-                albumPic: "http://p3.music.126.net/34YW1QtKxJ_3YnX9ZzKhzw==/2946691234868155.jpg",  // 歌曲封面
-                musicId: 436514312,     // 歌曲的网易云音乐ID(歌曲的歌词会根据这个 ID 来获取，请务必填写正确。id值不需要加引号)
-                mp3Url: "http://p2.music.126.net/7o5D4dA6271VktgawcbZFA==/18665309393829604.mp3"    // 歌曲链接(这里不加逗号)
+                id: "436514312",  // 音乐ID
+                name: "成都",  // 音乐名字
+                artist: "赵雷", // 艺术家名字
+                album: "成都",    // 专辑名字
+                source: "netease",     // 音乐来源
+                url_id: "436514312",  // 链接ID
+                pic_id: "2946691234868155",  // 封面ID
+                lyric_id: "436514312",  // 歌词ID
+                pic: "https://p3.music.126.net/34YW1QtKxJ_3YnX9ZzKhzw==/2946691234868155.jpg",    // 专辑图片
+                url: "https://p2.music.126.net/7o5D4dA6271VktgawcbZFA==/18665309393829604.mp3"   // mp3链接
+            },
+            // 下面演示插入各个平台的音乐。。。
+            {
+                id: "65528",
+                name: "淘汰",
+                artist: "陈奕迅",
+                album: "认了吧",
+                source: "netease",      // 网易云
+                url_id: "65528",
+                pic_id: "18782957139233959",
+                lyric_id: "65528",
+                pic: "https://p3.music.126.net/BFuOepLmD63tY75UJs1c0Q==/18872017579169120.jpg",
+                url: "https://p2.music.126.net/cMlOV_XZceHNLA1GpvkyLQ==/7990151000576820.mp3"
             },
             {
-                musicName: "淘汰",      // 音乐名字
-                artistsName: "陈奕迅",  // 歌手名字
-                albumName: "认了吧",    // 歌曲专辑
-                albumPic: "http://p3.music.126.net/BFuOepLmD63tY75UJs1c0Q==/18872017579169120.jpg", // 歌曲封面
-                musicId: 65528,         // 歌曲网易云ID
-                mp3Url: "http://p2.music.126.net/cMlOV_XZceHNLA1GpvkyLQ==/7990151000576820.mp3" // 歌曲链接(这里不加逗号)
-            }   // 列表中最后一首歌大括号后面不要加逗号
+                id: "001JD1SR29d1hS",
+                name: "特别的爱给特别的你",
+                artist: "伍思凯",
+                album: "特别的爱给特别的你",
+                source: "tencent",      // 腾讯
+                url_id: "001JD1SR29d1hS",
+                pic_id: "004DYsvN2QCYcj",
+                lyric_id: "001JD1SR29d1hS",
+                pic: "https://y.gtimg.cn/music/photo_new/T002R300x300M000004DYsvN2QCYcj.jpg?max_age=2592000",
+                url: ""     // 腾讯的外链有效期较短，插入时 url [必须]设置空值，播放时再临时抓取
+            },
+            {
+                id: "81175",
+                name: "让我欢喜让我忧",
+                artist: "周华健",
+                album: "让我欢喜让我忧",
+                source: "xiami",    // 虾米
+                url_id: "81175",
+                pic_id: "81175",
+                lyric_id: "81175",
+                pic: "https://pic.xiami.net/images/album/img58/1258/66271400572139.jpg@300h_300w_100q_1c.jpg",
+                url: "https://om6.alicdn.com/258/1258/6627/81175_60243588_h.mp3?auth_key=31b6f2878c1e29b769cbb6b63d2da843-1505098800-0-null"
+            },
+            {
+                id: "2a24dea6c74884195fe5b9732fd95ca8",
+                name: "小幸运",
+                artist: "金玟岐",
+                album: "金玟岐翻唱作品集",
+                source: "kugou",        // 酷狗
+                url_id: "2a24dea6c74884195fe5b9732fd95ca8",
+                pic_id: "2a24dea6c74884195fe5b9732fd95ca8",
+                lyric_id: "2a24dea6c74884195fe5b9732fd95ca8",
+                pic: "http://singerimg.kugou.com/uploadpic/softhead/400/20161226/20161226105135733.jpg",
+                url: ""     // 酷狗的外链有效期较短，插入时 url [必须]设置空值，播放时再临时抓取
+            },
+            {
+                id: "121004737",
+                name: "难忘今宵",
+                artist: "李谷一",
+                album: "难忘今宵",
+                source: "baidu",        // 百度
+                url_id: "121004737",
+                pic_id: "121004737",
+                lyric_id: "121004737",
+                pic: "http://musicdata.baidu.com/data2/pic/2733cd9816b8618afd3038d5d9444940/266105319/266105319.jpg@s_0,w_150",
+                url: ""         // 百度的外链有效期较短，插入时 url [必须]设置空值，播放时再临时抓取
+            }  // 列表中最后一首歌大括号后面不要加逗号
         ]
     },
     // 方式二：直接提供网易云歌单ID

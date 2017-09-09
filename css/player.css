@@ -1,9 +1,9 @@
 @charset "utf-8";
 /**************************************************
- * MKOnlinePlayer v2.2
+ * MKOnlinePlayer v2.3
  * 播放器样式表文件
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-26
+ * 时间：2017-9-9
  *************************************************/
 blockquote, body, button, dd, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, hr, html, input, lengend, li, ol, p, pre, td, textarea, th, ul {
     margin: 0;
@@ -53,6 +53,7 @@ a:focus, button:focus, input:focus {
 .clear-fix {zoom: 1;}
 .clear-fix:before, .clear-fix:after {display: table;line-height: 0;content: "";}
 .clear-fix:after {clear: both; }
+.hidden {display: none !important;}
 /*滚动条美化*/
 .mCSB_container::-webkit-scrollbar{width:0;height:0}
 #lyric::-webkit-scrollbar{width:0;height:0}
@@ -85,6 +86,21 @@ body {
     width: 120%;
     overflow: hidden;
 }
+/* 移动端使用的模糊图像层 */
+#mobile-blur {
+    -webkit-filter: blur(50px);
+    filter: blur(50px);
+    -webkit-transform: scale(1.15);
+    transform: scale(1.15);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    background-size: cover;
+    background-position: bottom center;
+}
 /* 图像遮罩层 */
 .blur-mask {
     display: none;
@@ -98,6 +114,12 @@ body {
     top: 0;
     left: 0;
     overflow: hidden;
+}
+
+.mobile-mask {
+    filter:alpha(opacity=60); 
+    -moz-opacity:0.6; 
+    opacity:0.6;
 }
 
 #mkplayer{
@@ -150,7 +172,7 @@ body {
 }
 
 
-/* 搜索区域 */
+/* 顶部按钮区域 */
 .btn-box {
     position: absolute;
     top: 10px;
@@ -160,6 +182,11 @@ body {
 }
 /* 常规按钮 */
 .btn {
+    transition: all 0.25s ease;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    -o-transition: all 0.25s ease;
+    -ms-transition: all 0.25s ease;
     display: inline-block;
     position: relative;
     border-radius: 2px;
@@ -182,46 +209,41 @@ body {
     display: none;
 }
 
-.search-btn {
-    text-align: center;
-    position: absolute;
-    top: 0;
-    bottom: 0;
+/* 搜索工具样式 */
+#search-area {
+    padding: 25px 15px;
+}
+.search-group {
+    font-size: 0;
+    padding-bottom: 10px;
+}
+.search-group>input, .search-group>button {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.search-group>input {
+    padding: 5px;
+    border: 1px solid #a7a1a1;
+    height: 35px;
+    width: 80%;
+}
+.search-group>button {
+    border: 1px solid #a7a1a1;
     background-color: #eee;
-    right: 0;
-    padding: 6px 0;
+    height: 35px;
+    margin-left: -1px;
+    width: 20%;
+    white-space: nowrap;
+    text-overflow: clip;
+    overflow: hidden;
+}
+.radio-group>label {
+    margin-right: 10px;
     cursor: pointer;
 }
-
-.search-submit {
-    width: 100px;
-    
-}
-
-.search-close {
-    padding: 8px 0;
-    background-color: #fff;
-    width: 30px;
-    right: 100px;
-}
-
-.input{
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 120px;
-    background-color: #fff;
-}
-
-.input input {
-    position: absolute;
-    border: none;
-    top: 10px;
-    bottom: 10px;
-    left: 10px;
-    width: 100%;
+.radio-group>label>input {
+    vertical-align: -2px;
 }
 
 /* 左侧主体数据区 */
@@ -261,6 +283,7 @@ body {
     overflow: hidden;
     border-bottom: 1px solid rgba(150,150,150,.1);
     cursor: default;
+    position: relative;
 }
 
 /* 正在播放的那项 */
@@ -322,6 +345,11 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+/* 移动端的菜单图标 */
+.list-mobile-menu {
+    display: none;
+}
+
 /*列表中滑动出现的菜单*/
 .list-menu {
     position: absolute;
@@ -377,6 +405,18 @@ body {
 .share-url {
     width: 100%;
     margin-top: 10px;
+    margin-bottom: 10px;
+    line-height: 30px;
+    box-sizing: border-box;
+    padding: 0 5px;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 5px rgba(0,0,0,.1) inset;
+    color: #333;
+    height: 35px;
+}
+.share-tips {
+    font-size: 12px;
+    color: #a9a9a9;
 }
 
 /* 列表中可以被点击的横条 */
@@ -467,6 +507,7 @@ body {
     width: 201px;
     height: 180px;
     background: url(../images/album_cover_player.png) 0 0 no-repeat;
+    pointer-events: none;
 }
 /* 歌曲封面图片 */
 .music-cover {
@@ -475,7 +516,7 @@ body {
     height: 186px;
 }
 
-/* 歌词部分 */
+/* 歌词显示区域 */
 .lyric {
     position: absolute;
     left: 10px;
@@ -489,13 +530,19 @@ body {
     line-height: 28px;
     padding: 20px 0;
 }
-
+/* 歌词ul */
 #lyric {
     position: absolute;
     width: 100%;
     top: 0;
     bottom: 0;
     overflow: hidden;
+}
+#lyric>li {
+    word-break: keep-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /* 正在播放的那一句歌词 */
 #lyric .lplaying {
@@ -510,8 +557,13 @@ body {
 
 /* 歌曲信息按钮 */
 #music-info {
+    transition: all 0.25s ease;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    -o-transition: all 0.25s ease;
+    -ms-transition: all 0.25s ease;
     position: absolute;
-    width: 26px;
+    width: 27px;
     height: 26px;
     border-radius: 13px;
     right: 10px;
@@ -520,11 +572,16 @@ body {
     color: #fff;
     text-align: center;
     line-height: 26px;
-    font-family: SimSun,"宋体";
     font-weight: bold;
-    background-color: #4E4E4E;
+    background-image: url(../images/player.png);
+    background-position: -28px -367px;
+    background-color: #353535;
     opacity: 0.3;
     filter: Alpha(opacity=30);
+}
+#music-info:hover {
+    opacity: 1;
+    filter: Alpha(opacity=100);
 }
 /* 标题 */
 .info-title {
