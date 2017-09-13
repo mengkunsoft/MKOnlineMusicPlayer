@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.2
+ * MKOnlinePlayer v2.31
  * 封装函数及UI交互模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-26
+ * 时间：2017-9-12
  *************************************************/
 // 判断是否是移动设备
 var isMobile = {  
@@ -370,19 +370,50 @@ function thisShare(obj) {
 // 下载歌曲
 // 参数：包含歌曲信息的数组
 function download(music) {
-    $('<a id="tmp-down" href="'+ music.url +'" download="' +music.name + ' - ' + music.artist + '.mp3" target="_blank">1</a>').appendTo('body').click();
-    $('#tmp-down').click();
-    $('#tmp-down').remove();    // 移除
-    window.open(music.url);
+    if(music.url == 'err' || music.url == "" || music.url == null) {
+        layer.msg('这首歌不支持下载');
+        return;
+    }
+    openDownloadDialog(music.url, music.name + ' - ' + music.artist);
+}
+
+/**
+ * 通用的打开下载对话框方法，没有测试过具体兼容性
+ * @param url 下载地址，也可以是一个blob对象，必选
+ * @param saveName 保存文件名，可选
+ * http://www.cnblogs.com/liuxianan/p/js-download.html
+ */
+function openDownloadDialog(url, saveName)
+{
+    if(typeof url == 'object' && url instanceof Blob)
+    {
+        url = URL.createObjectURL(url); // 创建blob地址
+    }
+    var aLink = document.createElement('a');
+    aLink.href = url;
+    aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+    var event;
+    if(window.MouseEvent) event = new MouseEvent('click');
+    else
+    {
+        event = document.createEvent('MouseEvents');
+        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    }
+    aLink.dispatchEvent(event);
 }
 
 // 获取外链的ajax回调函数
 // 参数：包含音乐信息的数组
 function ajaxShare(music) {
+    if(music.url == 'err' || music.url == "" || music.url == null) {
+        layer.msg('这首歌不支持外链获取');
+        return;
+    }
+    
     var tmpHtml = '<p>' + music.artist + ' - ' + music.name + ' 的外链地址为：</p>' + 
     '<input class="share-url" onmouseover="this.focus();this.select()" value="' + music.url + '">';
     
-    if(music.source != "netease" && music.source != "xiami") {
+    if(music.source != "netease") {
         tmpHtml += '<p class="share-tips">* 当前音乐源歌曲链接有效期较短，不建议作外链使用</p>'
     }
     
@@ -410,14 +441,18 @@ function changeCover(music) {
     $(".sheet-item[data-no='1'] .sheet-cover").attr('src', img);    // 改变正在播放列表的图像
     
     if(img == "err") img = "";  // 背景为空
-    if((mkPlayer.coverbg === true && !rem.isMobile) || (mkPlayer.mcoverbg === true && rem.isMobile)) { // 开启了封面背景
+    
+    if(mkPlayer.mcoverbg === true && rem.isMobile && img)      // 移动端封面
+    {    
+        $("#music-cover").load(function(){
+            $("#mobile-blur").css('background-image', 'url("' + img + '")');
+        });
+    } 
+    else if(mkPlayer.coverbg === true && !rem.isMobile)     // PC端封面
+    { 
         $("#music-cover").load(function(){
             if(animate) {   // 渐变动画也已完成
-                if(rem.isMobile) {  // 移动端禁用动画，节约内存
-                    $("#mobile-blur").css('background-image', 'url("' + img + '")');
-                } else {   
-                    $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
-                }
+                $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
                 $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
             } else {
                 imgload = true;     // 告诉下面的函数，图片已准备好
@@ -428,12 +463,7 @@ function changeCover(music) {
         // 渐变动画
         $("#blur-img").animate({opacity: "0.2"}, 1000, function(){
             if(imgload) {   // 如果图片已经加载好了
-                if(rem.isMobile) {
-                    $("#mobile-blur").css('background-image', 'url("' + img + '")');
-                } else {
-                    $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
-                }
-                
+                $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
                 $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
             } else {
                 animate = true;     // 等待图像加载完
@@ -475,8 +505,8 @@ function loadList(list) {
         
         addItem(i + 1, tmpMusic.name, tmpMusic.artist, tmpMusic.album);
         
-        // 只有网易云和虾米音乐源的歌曲进行链接记录(其它音乐链接均有有效期限制,重新显示列表时清空处理)
-        if(tmpMusic.source != "netease" && tmpMusic.source != "xiami") tmpMusic.url = "";
+        // 只有网易云的歌曲进行链接记录(其它音乐链接均有有效期限制,重新显示列表时清空处理)
+        if(tmpMusic.source != "netease") tmpMusic.url = "";
     }
     if(i == 0) {
         addListbar("nodata");   // 列表中没有数据

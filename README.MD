@@ -1,4 +1,4 @@
-﻿MKOnlineMusicPlayer v2.3
+﻿MKOnlineMusicPlayer v2.31
 ========
 MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人网易云音乐播放列表同步等功能。
 
@@ -41,6 +41,7 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 ### 待解决的问题
 -----
 - 高音质音乐下载功能
+- IOS 歌曲播放问题
 - 歌曲播放模式切换(单曲循环、随机播放、列表循环)功能
 
 ### 打赏
@@ -52,6 +53,13 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 
 ### 更新日志
 -----
+#### v2.31 `2017/9/13`
+- 优化下载功能，支持直接弹出下载
+- 下载或分享无版权音乐时给出提示
+- 再次降低移动端背景特效内存占用
+- 修复某些手机浏览器列表页右侧菜单按钮下移 BUG
+- 升级 Meting 至最新版本
+
 #### v2.3 `2017/9/9`
 - 全面支持网易云、QQ、虾米、酷狗、百度音乐源切换
 - 移动端歌曲列表支持直接分享、下载歌曲
