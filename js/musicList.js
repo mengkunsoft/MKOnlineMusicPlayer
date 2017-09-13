@@ -77,7 +77,7 @@ var musicList = [
                 pic_id: "2946691234868155",  // 封面ID
                 lyric_id: "436514312",  // 歌词ID
                 pic: "https://p3.music.126.net/34YW1QtKxJ_3YnX9ZzKhzw==/2946691234868155.jpg",    // 专辑图片
-                url: "https://p2.music.126.net/7o5D4dA6271VktgawcbZFA==/18665309393829604.mp3"   // mp3链接
+                url: "https://p2.music.126.net/7o5D4dA6271VktgawcbZFA==/18665309393829604.mp3"   // mp3链接（此项建议不填，因为各大音乐平台的外链有效期都较短……）
             },
             // 下面演示插入各个平台的音乐。。。
             {
@@ -114,7 +114,7 @@ var musicList = [
                 pic_id: "81175",
                 lyric_id: "81175",
                 pic: "https://pic.xiami.net/images/album/img58/1258/66271400572139.jpg@300h_300w_100q_1c.jpg",
-                url: "https://om6.alicdn.com/258/1258/6627/81175_60243588_h.mp3?auth_key=31b6f2878c1e29b769cbb6b63d2da843-1505098800-0-null"
+                url: ""     // 虾米的外链有效期较短，插入时 url [必须]设置空值，播放时再临时抓取
             },
             {
                 id: "2a24dea6c74884195fe5b9732fd95ca8",

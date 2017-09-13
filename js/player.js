@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.3
+ * MKOnlinePlayer v2.31
  * 播放器主功能模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-9-3
+ * 时间：2017-9-12
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
@@ -16,7 +16,7 @@ var mkPlayer = {
     dotshine: true,    // 是否开启播放进度条的小点闪动效果[不支持IE](true/false) *开启后会有些卡
     mdotshine: false,   // 是否开启[移动端]播放进度条的小点闪动效果[不支持IE](true/false)
     volume: 0.6,        // 默认音量值(0~1之间)
-    version: "v2.3",    // 播放器当前版本号(仅供调试)
+    version: "v2.31",    // 播放器当前版本号(仅供调试)
     debug: false   // 是否开启调试模式(true/false)
 };
 
@@ -201,6 +201,7 @@ function initAudio() {
     rem.audio[0].addEventListener('ended', nextMusic);   // 播放结束
     rem.audio[0].addEventListener('error', audioErr);   // 播放器错误处理
 }
+
 
 // 播放音乐
 // 参数：要播放的音乐数组
