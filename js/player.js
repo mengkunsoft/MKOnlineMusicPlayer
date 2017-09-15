@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.31
+ * MKOnlinePlayer v2.32
  * 播放器主功能模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-9-12
+ * 时间：2017-9-15
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
@@ -16,7 +16,7 @@ var mkPlayer = {
     dotshine: true,    // 是否开启播放进度条的小点闪动效果[不支持IE](true/false) *开启后会有些卡
     mdotshine: false,   // 是否开启[移动端]播放进度条的小点闪动效果[不支持IE](true/false)
     volume: 0.6,        // 默认音量值(0~1之间)
-    version: "v2.31",    // 播放器当前版本号(仅供调试)
+    version: "v2.32",    // 播放器当前版本号(仅供调试)
     debug: false   // 是否开启调试模式(true/false)
 };
 
@@ -69,6 +69,9 @@ function audioPlay() {
     if((mkPlayer.dotshine === true && !rem.isMobile) || (mkPlayer.mdotshine === true && rem.isMobile)) {
         $("#music-progress .mkpgb-dot").addClass("dot-move");   // 小点闪烁效果
     }
+    
+    var music = musicList[rem.playlist].item[rem.playid];   // 获取当前播放的歌曲信息
+    document.title = music.name + " - " + music.artist + " | " + rem.webTitle;  // 改变浏览器标题
 }
 
 // 暂停
@@ -80,6 +83,8 @@ function audioPause() {
     $(".btn-play").removeClass("btn-state-paused");     // 取消暂停
     
     $("#music-progress .dot-move").removeClass("dot-move");   // 小点闪烁效果
+    
+    document.title = rem.webTitle;    // 改变浏览器标题
 }
 
 // 播放上一首歌
