@@ -6,11 +6,11 @@ MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器�
 
 ### 界面欣赏
 -----
-![主界面(电脑端)](https://ws1.sinaimg.cn/large/a15b4afegy1fjkiif1v1uj211y0ho7ft.jpg)
+![主界面(电脑端)](https://ws3.sinaimg.cn/large/a15b4afegy1fjkiif1v1uj211y0ho7ft.jpg)
 
-![播放列表界面(电脑端)](https://ws1.sinaimg.cn/large/a15b4afegy1fjkige7cf3j211y0hqh0p.jpg)
+![播放列表界面(电脑端)](https://ws3.sinaimg.cn/large/a15b4afegy1fjkige7cf3j211y0hqh0p.jpg)
 
-![歌曲搜索与播放](https://ws1.sinaimg.cn/large/a15b4afegy1fjkigwt7rkj211y0hm7de.jpg)
+![歌曲搜索与播放](https://ws3.sinaimg.cn/large/a15b4afegy1fjkigwt7rkj211y0hm7de.jpg)
 
 
 ### 相关链接
