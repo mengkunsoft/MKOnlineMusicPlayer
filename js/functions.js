@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.31
+ * MKOnlinePlayer v2.32
  * 封装函数及UI交互模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-9-12
+ * 时间：2017-9-15
  *************************************************/
 // 判断是否是移动设备
 var isMobile = {  
@@ -29,6 +29,7 @@ $(function(){
     }
     
     rem.isMobile = isMobile.any();
+    rem.webTitle = document.title;      // 记录页面原本的标题
     
     initProgress();     // 初始化音量条、进度条（进度条初始化要在 Audio 前，别问我为什么……）
     initAudio();    // 初始化 audio 标签，事件绑定
@@ -304,7 +305,8 @@ function musicInfo(list, index) {
         'pic_id: "' + music.pic_id + '",\n' + 
         'lyric_id: "' + music.lyric_id + '",\n' + 
         'pic: "' + music.pic + '",\n' +
-        'url: "' + music.url + '"');
+        'url: ""');
+        // 'url: "' + music.url + '"');
     }
 }
 
@@ -411,11 +413,8 @@ function ajaxShare(music) {
     }
     
     var tmpHtml = '<p>' + music.artist + ' - ' + music.name + ' 的外链地址为：</p>' + 
-    '<input class="share-url" onmouseover="this.focus();this.select()" value="' + music.url + '">';
-    
-    if(music.source != "netease") {
-        tmpHtml += '<p class="share-tips">* 当前音乐源歌曲链接有效期较短，不建议作外链使用</p>'
-    }
+    '<input class="share-url" onmouseover="this.focus();this.select()" value="' + music.url + '">' + 
+    '<p class="share-tips">* 获取到的音乐外链有效期较短，请按需使用。</p>';
     
     layer.open({
         title: '歌曲外链分享'
@@ -427,49 +426,48 @@ function ajaxShare(music) {
 // 新的图像地址
 function changeCover(music) {
     var img = music.pic;    // 获取歌曲封面
+    var animate = false,imgload = false;
     
     if(!img) {  // 封面为空
         ajaxPic(music, changeCover);    // 获取歌曲封面图
         img == "err";    // 暂时用无图像占个位...
     }
     
-    if(img == "err") img = "images/player_cover.png";
-    
-    var animate = false,imgload = false;
+    if(img == "err") {
+        img = "images/player_cover.png";
+    } else {
+        if(mkPlayer.mcoverbg === true && rem.isMobile)      // 移动端封面
+        {    
+            $("#music-cover").load(function(){
+                $("#mobile-blur").css('background-image', 'url("' + img + '")');
+            });
+        } 
+        else if(mkPlayer.coverbg === true && !rem.isMobile)     // PC端封面
+        { 
+            $("#music-cover").load(function(){
+                if(animate) {   // 渐变动画也已完成
+                    $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
+                    $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
+                } else {
+                    imgload = true;     // 告诉下面的函数，图片已准备好
+                }
+                
+            });
+            
+            // 渐变动画
+            $("#blur-img").animate({opacity: "0.2"}, 1000, function(){
+                if(imgload) {   // 如果图片已经加载好了
+                    $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
+                    $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
+                } else {
+                    animate = true;     // 等待图像加载完
+                }
+            });
+        }
+    }
     
     $("#music-cover").attr("src", img);     // 改变右侧封面
     $(".sheet-item[data-no='1'] .sheet-cover").attr('src', img);    // 改变正在播放列表的图像
-    
-    if(img == "err") img = "";  // 背景为空
-    
-    if(mkPlayer.mcoverbg === true && rem.isMobile && img)      // 移动端封面
-    {    
-        $("#music-cover").load(function(){
-            $("#mobile-blur").css('background-image', 'url("' + img + '")');
-        });
-    } 
-    else if(mkPlayer.coverbg === true && !rem.isMobile)     // PC端封面
-    { 
-        $("#music-cover").load(function(){
-            if(animate) {   // 渐变动画也已完成
-                $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
-                $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
-            } else {
-                imgload = true;     // 告诉下面的函数，图片已准备好
-            }
-            
-        });
-        
-        // 渐变动画
-        $("#blur-img").animate({opacity: "0.2"}, 1000, function(){
-            if(imgload) {   // 如果图片已经加载好了
-                $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
-                $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
-            } else {
-                animate = true;     // 等待图像加载完
-            }
-        });
-    }
 }
 
 
@@ -499,31 +497,34 @@ function loadList(list) {
     
     rem.mainList.html('');   // 清空列表中原有的元素
     addListhead();      // 向列表中加入列表头
-    // 逐项添加数据
-    for(var i=0; i<musicList[list].item.length; i++) {
-        var tmpMusic = musicList[list].item[i];
-        
-        addItem(i + 1, tmpMusic.name, tmpMusic.artist, tmpMusic.album);
-        
-        // 只有网易云的歌曲进行链接记录(其它音乐链接均有有效期限制,重新显示列表时清空处理)
-        if(tmpMusic.source != "netease") tmpMusic.url = "";
-    }
-    if(i == 0) {
+    
+    if(musicList[list].item.length == 0) {
         addListbar("nodata");   // 列表中没有数据
     } else {
+        
+        // 逐项添加数据
+        for(var i=0; i<musicList[list].item.length; i++) {
+            var tmpMusic = musicList[list].item[i];
+            
+            addItem(i + 1, tmpMusic.name, tmpMusic.artist, tmpMusic.album);
+            
+            // 音乐链接均有有效期限制,重新显示列表时清空处理
+            if(list == 1 || list == 2) tmpMusic.url = "";
+        }
+        
+        // 列表加载完成后的处理
         if(list == 1 || list == 2) {    // 历史记录和正在播放列表允许清空
             addListbar("clear");    // 清空列表
         }
         
-        if(rem.playlist === undefined) {
-            // 未曾播放过
+        if(rem.playlist === undefined) {    // 未曾播放过
             if(mkPlayer.autoplay == true) pause();  // 设置了自动播放，则自动播放
         } else {
             refreshList();  // 刷新列表，添加正在播放样式
         }
+        
+        listToTop();    // 播放列表滚动到顶部
     }
-    
-    listToTop();    // 播放列表滚动到顶部
 }
 
 // 播放列表滚动到顶部
@@ -650,7 +651,7 @@ function refreshList() {
               (musicList[rem.dislist].item[i].id == musicList[1].item[rem.playid].id) && 
               (musicList[rem.dislist].item[i].source == musicList[1].item[rem.playid].source)) {
                 $(".list-item[data-no='" + i + "']").addClass("list-playing");  // 添加正在播放样式
-                // $(".list-item:eq(" + (i + 1) + ")").addClass("list-playing");  // 添加正在播放样式
+                
                 return true;    // 一般列表中只有一首，找到了赶紧跳出
             }
         }
@@ -770,16 +771,16 @@ function initList() {
             // 读取正在播放列表
             var tmp_item = playerReaddata('playing');
             if(tmp_item) {  // 读取到了正在播放列表
-                musicList[i].item = tmp_item;
+                musicList[1].item = tmp_item;
                 mkPlayer.defaultlist = 1;   // 默认显示正在播放列表
-            } else {
-                musicList[i].item = musicList[i].item;
             }
             
         } else if(i == 2) { // 历史记录列表
             // 读取历史记录
             var tmp_item = playerReaddata('his');
-            musicList[i].item = tmp_item? tmp_item: musicList[i].item;
+            if(tmp_item) {
+                musicList[2].item = tmp_item;
+            }
             
          // 列表不是用户列表，并且信息为空，需要ajax读取列表
         }else if(!musicList[i].creatorID && (musicList[i].item == undefined || (i>2 && musicList[i].item.length == 0))) {   
