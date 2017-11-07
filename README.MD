@@ -1,4 +1,4 @@
-﻿MKOnlineMusicPlayer v2.32
+MKOnlineMusicPlayer v2.32
 ========
 MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人网易云音乐播放列表同步等功能。
 
@@ -204,7 +204,10 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 -----
 恭喜下列个人或单位永久入驻耻辱柱！
 
+#### 绿岛资源站 [http://www.ldzy.cc/]
+原因：未经允许，发布到淘宝售卖(https://item.taobao.com/item.htm?id=560064138441 ) 截图：https://t.cn/RlNRmi5
+
 #### 68喜论坛 [http://www.68xi.com/]
-原因：未经允许，删改版权信息(http://music.68xi.com/)，并发布到淘宝售卖(https://item.taobao.com/item.htm?id=547226809330)
+原因：未经允许，删改版权信息(http://music.68xi.com/ )，并发布到淘宝售卖(https://item.taobao.com/item.htm?id=547226809330 )
 
 `奉劝某些“人”保留住做人的最基本底线，遵守开源协议，并引以为戒`
