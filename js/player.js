@@ -242,6 +242,12 @@ function play(music) {
         refreshList();  // 更新列表显示
     }
     
+	// 解决网易云音乐部分歌曲无法播放问题
+    if(music.source == "netease") {
+        music.url = music.url.replace(/m7c.music./g, "m7.music.");
+        music.url = music.url.replace(/m8c.music./g, "m8.music.");
+    }
+	
     try {
         rem.audio[0].pause();
         rem.audio.attr('src', music.url);
