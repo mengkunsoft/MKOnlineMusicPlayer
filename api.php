@@ -38,6 +38,11 @@ switch(getParam('types'))   // 根据请求的 Api，执行相应操作
     case 'url':   // 获取歌曲链接
         $id = getParam('id');  // 歌曲ID
         
+		if($source == 'netease') {    // 临时修复网易云链接获取失效（凑合一下..）
+            echojson('{"url":"https://music.163.com/song/media/outer/url?id='.$id.'.mp3","br":320}');
+            return;
+        }
+		
         $data = $API->url($id);
         
         echojson($data);
