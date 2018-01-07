@@ -60,6 +60,19 @@ function pause() {
     }
 }
 
+// 循环顺序
+function orderChange() {
+  if(!rem.order){
+    rem.order = 2
+  }
+  rem.order++;
+  if(rem.order > 3){
+    rem.order = 1
+  }
+  var orderDiv = $(".btn-order")
+  orderDiv.removeClass()
+  orderDiv.addClass("player-btn btn-order btn-order-" + rem.order)
+}
 // 播放
 function audioPlay() {
     rem.paused = false;     // 更新状态（未暂停）
@@ -94,7 +107,28 @@ function prevMusic() {
 
 // 播放下一首歌
 function nextMusic() {
-    playList(rem.playid + 1);
+  switch (rem.order ? rem.order : 1) {
+    case 1,2: 
+      playList(rem.playid + 1);
+      break;
+    case 3: 
+      if (musicList[1] && musicList[1].item.length) {
+        var id = parseInt(Math.random() * musicList[1].item.length)
+        playList(id);
+      }
+      break;
+    default:
+      playList(rem.playid + 1); 
+      break;
+  }
+}
+// 自动播放时的下一首歌
+function autoNextMusic() {
+  if(rem.order && rem.order === 1) {
+    playList(rem.playid);
+  } else {
+    nextMusic()
+  }
 }
 
 // 歌曲时间变动回调函数
@@ -203,7 +237,7 @@ function initAudio() {
     rem.audio[0].addEventListener('timeupdate', updateProgress);   // 更新进度
     rem.audio[0].addEventListener('play', audioPlay); // 开始播放了
     rem.audio[0].addEventListener('pause', audioPause);   // 暂停
-    rem.audio[0].addEventListener('ended', nextMusic);   // 播放结束
+    $(rem.audio[0]).on('ended', autoNextMusic);   // 播放结束
     rem.audio[0].addEventListener('error', audioErr);   // 播放器错误处理
 }
 
