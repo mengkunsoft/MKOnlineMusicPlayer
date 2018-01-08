@@ -216,6 +216,10 @@ $(function(){
         pause();
     });
     
+    // 循环顺序的处理
+    $(".btn-order").click(function(){
+        orderChange();
+    });
     // 上一首歌
     $(".btn-prev").click(function(){
         prevMusic();
