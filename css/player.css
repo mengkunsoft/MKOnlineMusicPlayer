@@ -623,32 +623,55 @@ body {
     height: 100%;
     position: relative;
     margin: 0 10px;
+    display: flex;
+    align-items: center;
 }
 .con-btn a{
     display: inline-block;
-    position: absolute;
-    top: 50%;
+    /* position: absolute;
+    top: 50%; */
+    flex: 1;
 }
 .btn-prev{
     background-position: 0 -30px;
     width: 19px;
     height: 20px;
-    margin-top: -10px;
+    /* margin-top: -10px; */
 }
 
 .btn-play{
-    width: 21px;
+    width: 19px;
     height: 29px;
-    margin-top: -14.5px;
+    flex: 0 0 30px !important;
+    /* margin-top: -14.5px; */
     left: 50%;
-    margin-left: -10.5px;
+    /* margin-left: -10.5px; */
 }
 .btn-next{
     background-position: 0 -52px;
     right: 0;
     width: 19px;
     height: 20px;
-    margin-top: -10px;
+    /* margin-top: -10px; */
+}
+.btn-order{
+    background-position: 0 -205px;
+    right: 0;
+    width: 19px;
+    height: 25px;
+    /* margin-top: -10px; */
+}
+.btn-order-1{
+  background-position: 0 -231px;
+  height: 25px;
+}
+.btn-order-2{
+  background-position: 0 -204px;
+  height: 25px;
+}
+.btn-order-3{
+  background-position: 0 -73px;
+  height: 20px;
 }
 
 /* 音乐进度条区域 */
