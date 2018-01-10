@@ -72,18 +72,18 @@ function orderChange() {
   var orderDiv = $(".btn-order")
   orderDiv.removeClass()
   
-	if ( 1 === rem.order ) {
-		orderDiv.addClass("player-btn btn-order btn-order-single")
-		orderDiv.attr("title","单曲循环")
+  if ( 1 === rem.order ) {
+    orderDiv.addClass("player-btn btn-order btn-order-single")
+    orderDiv.attr("title","单曲循环")
 	} 
-	else if ( 2 === rem.order ) {
-		orderDiv.addClass("player-btn btn-order btn-order-list")
-		orderDiv.attr("title","列表循环")
-	}
-	else if ( 3 === rem.order ) {
-		orderDiv.addClass("player-btn btn-order btn-order-random")
-		orderDiv.attr("title","随机播放")
-	}
+  else if ( 2 === rem.order ) {
+    orderDiv.addClass("player-btn btn-order btn-order-list")
+    orderDiv.attr("title","列表循环")
+  }
+  else if ( 3 === rem.order ) {
+    orderDiv.addClass("player-btn btn-order btn-order-random")
+    orderDiv.attr("title","随机播放")
+  }
 }
 // 播放
 function audioPlay() {
