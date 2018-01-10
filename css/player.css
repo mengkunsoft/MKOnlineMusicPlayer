@@ -661,15 +661,15 @@ body {
     height: 25px;
     /* margin-top: -10px; */
 }
-.btn-order-1{
+.btn-order-single {
   background-position: 0 -231px;
   height: 25px;
 }
-.btn-order-2{
+.btn-order-list {
   background-position: 0 -204px;
   height: 25px;
 }
-.btn-order-3{
+.btn-order-random {
   background-position: 0 -73px;
   height: 20px;
 }
