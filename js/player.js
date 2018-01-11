@@ -127,7 +127,7 @@ function audioPause() {
     
     $("#music-progress .dot-move").removeClass("dot-move");   // 小点闪烁效果
 
-     // 清楚定时器
+     // 清除定时器
     if (rem.titflash !== undefined ) 
     {
         clearInterval(rem.titflash);
