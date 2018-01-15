@@ -75,7 +75,7 @@ function orderChange() {
   if ( 1 === rem.order ) {
     orderDiv.addClass("player-btn btn-order btn-order-single")
     orderDiv.attr("title","单曲循环")
-	} 
+  } 
   else if ( 2 === rem.order ) {
     orderDiv.addClass("player-btn btn-order btn-order-list")
     orderDiv.attr("title","列表循环")
@@ -96,9 +96,27 @@ function audioPlay() {
     }
     
     var music = musicList[rem.playlist].item[rem.playid];   // 获取当前播放的歌曲信息
-    document.title = music.name + " - " + music.artist + " | " + rem.webTitle;  // 改变浏览器标题
+    var msg = " 正在播放: " + music.name + " - " + music.artist;  // 改变浏览器标题
+    
+    // 清除定时器
+    if (rem.titflash !== undefined ) 
+    {
+        clearInterval(rem.titflash);
+    }
+    // 标题滚动
+    titleFlash(msg);
 }
+// 标题滚动
+function titleFlash(msg) {
 
+    // 截取字符
+    var tit = function() {
+        msg = msg.substring(1,msg.length)+ msg.substring(0,1);
+        document.title = msg;
+    };
+    // 设置定时间 300ms滚动
+    rem.titflash = setInterval(function(){tit()}, 300);
+}
 // 暂停
 function audioPause() {
     rem.paused = true;      // 更新状态（已暂停）
@@ -108,7 +126,12 @@ function audioPause() {
     $(".btn-play").removeClass("btn-state-paused");     // 取消暂停
     
     $("#music-progress .dot-move").removeClass("dot-move");   // 小点闪烁效果
-    
+
+     // 清除定时器
+    if (rem.titflash !== undefined ) 
+    {
+        clearInterval(rem.titflash);
+    }
     document.title = rem.webTitle;    // 改变浏览器标题
 }
 
