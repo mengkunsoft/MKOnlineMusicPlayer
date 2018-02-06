@@ -3,7 +3,7 @@
  * MKOnlinePlayer v2.3
  * 后台音乐数据抓取模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-9-9
+ * 时间：2018-2-6
  * 特别感谢 @metowolf 提供的 Meting.php
  *************************************************/
 
@@ -32,6 +32,7 @@ $API = new Meting($source);
 
 $API->format(true); // 启用格式化功能
 
+// $API->cookie('paste your cookie');
 
 switch(getParam('types'))   // 根据请求的 Api，执行相应操作
 {
@@ -88,7 +89,10 @@ switch(getParam('types'))   // 根据请求的 Api，执行相应操作
         $limit = getParam('count', 20);  // 每页显示数量
         $pages = getParam('pages', 1);  // 页码
         
-        $data = $API->search($s, $pages, $limit);
+        $data = $API->search($s, [
+            'page' => $pages, 
+            'limit' => $limit
+        ]);
         
         echojson($data);
         break;
