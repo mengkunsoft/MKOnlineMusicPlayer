@@ -37,9 +37,14 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 
 #### 其它
 作者很忙，非诚勿扰。欢迎提交 BUG 及好的建议，不欢迎一上来就问一些基础的东西及唠东唠西。
+`如果要提交问题，请务必告知您的网址，否则无法处理`
 
 ### 常见问题
 -----
+**网易云音乐源播放失效，歌曲列表只剩一首歌**
+
+解决办法参考 [网易云音乐问题](https://github.com/mengkunsoft/MKOnlineMusicPlayer/wiki/%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E9%97%AE%E9%A2%98)
+
 **歌单读取失败 - 404**
 
 本程序需要上传至网站空间(服务器)使用，不支持在本地打开
@@ -54,11 +59,14 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 
 请打开 `api.php`，将第十行的 `define('HTTPS', true);` 修改为 `define('HTTPS', false);`
 
+**更多常见问题**
+
+[请前往 wiki 查阅](https://github.com/mengkunsoft/MKOnlineMusicPlayer/wiki)
+
 ### 待解决的问题
 -----
-- 高音质音乐下载功能
+- 歌曲音质切换功能
 - IOS 歌曲播放问题
-- 歌曲播放模式切换(单曲循环、随机播放、列表循环)功能
 
 ### 打赏
 -----

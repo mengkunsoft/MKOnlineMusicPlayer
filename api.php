@@ -2,10 +2,25 @@
 /**************************************************
  * MKOnlinePlayer v2.3
  * 后台音乐数据抓取模块
- * 编写：mengkun(http://mkblog.cn)
- * 时间：2018-2-6
+ * 编写：mengkun(https://mkblog.cn)
+ * 时间：2018-2-11
  * 特别感谢 @metowolf 提供的 Meting.php
  *************************************************/
+
+/************ ↓↓↓↓↓ 如果网易云音乐歌曲获取失效，请将你的 COOKIE 放到这儿 ↓↓↓↓↓ ***************/
+$netease_cookie = '';
+/************ ↑↑↑↑↑ 如果网易云音乐歌曲获取失效，请将你的 COOKIE 放到这儿 ↑↑↑↑↑ ***************/
+/**
+* cookie 获取及使用方法见 
+* https://github.com/mengkunsoft/MKOnlineMusicPlayer/wiki/%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E9%97%AE%E9%A2%98
+* 
+* 更多相关问题可以查阅项目 wiki 
+* https://github.com/mengkunsoft/MKOnlineMusicPlayer/wiki
+* 
+* 如果还有问题，可以提交 issues
+* https://github.com/mengkunsoft/MKOnlineMusicPlayer/issues
+**/
+
 
 define('HTTPS', true);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
 define('DEBUG', false);      // 是否开启调试模式，正常使用时请将此项置为“false”
@@ -27,12 +42,15 @@ require_once('plugns/Meting.php');
 use Metowolf\Meting;
 
 $source = getParam('source', 'netease');  // 歌曲源
-if($source == 'kugou' || $source == 'baidu') define('NO_HTTPS', true);    // 酷狗和百度音乐源暂不支持 https
 $API = new Meting($source);
 
 $API->format(true); // 启用格式化功能
 
-// $API->cookie('paste your cookie');
+if($source == 'kugou' || $source == 'baidu') {
+    define('NO_HTTPS', true);        // 酷狗和百度音乐源暂不支持 https
+} elseif($source == 'netease') {
+    $API->cookie($netease_cookie);    // 解决网易云 Cookie 失效
+}
 
 switch(getParam('types'))   // 根据请求的 Api，执行相应操作
 {

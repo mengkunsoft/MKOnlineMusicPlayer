@@ -1,8 +1,8 @@
 /**************************************************
  * MKOnlinePlayer v2.32
  * 播放器主功能模块
- * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-9-15
+ * 编写：mengkun(https://mkblog.cn)
+ * 时间：2018-2-11
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
@@ -311,10 +311,12 @@ function play(music) {
         refreshList();  // 更新列表显示
     }
     
-	// 解决网易云音乐部分歌曲无法播放问题
+    // 解决网易云音乐部分歌曲无法播放问题
     if(music.source == "netease") {
         music.url = music.url.replace(/m7c.music./g, "m7.music.");
         music.url = music.url.replace(/m8c.music./g, "m8.music.");
+    } else if(music.source == "baidu") {    // 解决百度音乐防盗链
+        music.url = music.url.replace(/http:\/\/zhangmenshiting.qianqian.com/g, "https://gss0.bdstatic.com/y0s1hSulBw92lNKgpU_Z2jR7b2w6buu");
     }
 	
     try {
