@@ -48,7 +48,7 @@ $API->format(true); // 启用格式化功能
 
 if($source == 'kugou' || $source == 'baidu') {
     define('NO_HTTPS', true);        // 酷狗和百度音乐源暂不支持 https
-} elseif($source == 'netease') {
+} elseif(($source == 'netease') && $netease_cookie) {
     $API->cookie($netease_cookie);    // 解决网易云 Cookie 失效
 }
 
