@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.31
+ * MKOnlinePlayer v2.4
  * Ajax 后台数据交互请求模块
- * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-9-13
+ * 编写：mengkun(https://mkblog.cn)
+ * 时间：2018-3-11
  *************************************************/
 
 // ajax加载搜索结果
@@ -188,7 +188,7 @@ function ajaxPic(music, callback)
 
 // ajax加载用户歌单
 // 参数：歌单网易云 id, 歌单存储 id，回调函数
-function ajaxPlayList(lid, id, callback){
+function ajaxPlayList(lid, id, callback) {
     if(!lid) return false;
     
     // 已经在加载了，跳过
@@ -218,7 +218,7 @@ function ajaxPlayList(lid, id, callback){
             };
             
             if(jsonData.playlist.coverImgUrl !== '') {
-                tempList.cover = jsonData.playlist.coverImgUrl;
+                tempList.cover = jsonData.playlist.coverImgUrl + "?param=200y200";
             } else {
                 tempList.cover = musicList[id].cover;
             }
@@ -235,7 +235,7 @@ function ajaxPlayList(lid, id, callback){
                         url_id: jsonData.playlist.tracks[i].id,  // 链接ID
                         pic_id: null,  // 封面ID
                         lyric_id: jsonData.playlist.tracks[i].id,  // 歌词ID
-                        pic: jsonData.playlist.tracks[i].al.picUrl,    // 专辑图片
+                        pic: jsonData.playlist.tracks[i].al.picUrl + "?param=300y300",    // 专辑图片
                         url: null   // mp3链接
                     };
                 }
@@ -354,7 +354,7 @@ function ajaxUserList(uid)
                     tempList = {
                         id: jsonData.playlist[i].id,    // 列表的网易云 id
                         name: jsonData.playlist[i].name,   // 列表名字
-                        cover: jsonData.playlist[i].coverImgUrl,   // 列表封面
+                        cover: jsonData.playlist[i].coverImgUrl  + "?param=200y200",   // 列表封面
                         creatorID: uid,   // 列表创建者id
                         creatorName: jsonData.playlist[i].creator.nickname,   // 列表创建者名字
                         creatorAvatar: jsonData.playlist[i].creator.avatarUrl,   // 列表创建者头像

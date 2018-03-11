@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.32
+ * MKOnlinePlayer v2.4
  * 播放器主功能模块
  * 编写：mengkun(https://mkblog.cn)
- * 时间：2018-2-11
+ * 时间：2018-3-11
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
@@ -16,7 +16,7 @@ var mkPlayer = {
     dotshine: true,    // 是否开启播放进度条的小点闪动效果[不支持IE](true/false) *开启后会有些卡
     mdotshine: false,   // 是否开启[移动端]播放进度条的小点闪动效果[不支持IE](true/false)
     volume: 0.6,        // 默认音量值(0~1之间)
-    version: "v2.32",    // 播放器当前版本号(仅供调试)
+    version: "v2.4",    // 播放器当前版本号(仅供调试)
     debug: false   // 是否开启调试模式(true/false)
 };
 
@@ -36,8 +36,14 @@ function audioErr() {
     // 没播放过，直接跳过
     if(rem.playlist === undefined) return true;
     
-    layer.msg('当前歌曲播放失败，自动播放下一首');
-    nextMusic();    // 切换下一首歌
+    if(rem.errCount > 10) { // 连续播放失败的歌曲过多
+        layer.msg('似乎出了点问题~播放已停止');
+        rem.errCount = 0;
+    } else {
+        rem.errCount++;     // 记录连续播放失败的歌曲数目
+        layer.msg('当前歌曲播放失败，自动播放下一首');
+        nextMusic();    // 切换下一首歌
+    } 
 }
 
 // 点击暂停按钮的事件
@@ -62,29 +68,29 @@ function pause() {
 
 // 循环顺序
 function orderChange() {
-  if(!rem.order){
-    rem.order = 2
-  }
-  rem.order++;
-  if(rem.order > 3){
-    rem.order = 1
-  }
-  var orderDiv = $(".btn-order")
-  orderDiv.removeClass()
-  
-  if ( 1 === rem.order ) {
-    orderDiv.addClass("player-btn btn-order btn-order-single")
-    orderDiv.attr("title","单曲循环")
-  } 
-  else if ( 2 === rem.order ) {
-    orderDiv.addClass("player-btn btn-order btn-order-list")
-    orderDiv.attr("title","列表循环")
-  }
-  else if ( 3 === rem.order ) {
-    orderDiv.addClass("player-btn btn-order btn-order-random")
-    orderDiv.attr("title","随机播放")
-  }
+    if(!rem.order) rem.order = 2;
+    rem.order++;
+    if(rem.order > 3) rem.order = 1;
+    
+    var orderDiv = $(".btn-order");
+    orderDiv.removeClass();
+    switch(rem.order) {
+        case 1:     // 单曲循环
+            orderDiv.addClass("player-btn btn-order btn-order-single");
+            orderDiv.attr("title","单曲循环");
+            break;
+            
+        case 3:     // 随机播放
+            orderDiv.addClass("player-btn btn-order btn-order-random");
+            orderDiv.attr("title","随机播放");
+            break;
+            
+        default:    // 顺序播放
+            orderDiv.addClass("player-btn btn-order btn-order-list");
+            orderDiv.attr("title","列表循环");
+    }
 }
+
 // 播放
 function audioPlay() {
     rem.paused = false;     // 更新状态（未暂停）
@@ -142,28 +148,28 @@ function prevMusic() {
 
 // 播放下一首歌
 function nextMusic() {
-  switch (rem.order ? rem.order : 1) {
-    case 1,2: 
-      playList(rem.playid + 1);
-      break;
-    case 3: 
-      if (musicList[1] && musicList[1].item.length) {
-        var id = parseInt(Math.random() * musicList[1].item.length)
-        playList(id);
-      }
-      break;
-    default:
-      playList(rem.playid + 1); 
-      break;
-  }
+    switch (rem.order ? rem.order : 1) {
+        case 1,2: 
+            playList(rem.playid + 1);
+        break;
+        case 3: 
+            if (musicList[1] && musicList[1].item.length) {
+                var id = parseInt(Math.random() * musicList[1].item.length);
+                playList(id);
+            }
+        break;
+        default:
+            playList(rem.playid + 1); 
+        break;
+    }
 }
 // 自动播放时的下一首歌
 function autoNextMusic() {
-  if(rem.order && rem.order === 1) {
-    playList(rem.playid);
-  } else {
-    nextMusic()
-  }
+    if(rem.order && rem.order === 1) {
+        playList(rem.playid);
+    } else {
+        nextMusic();
+    }
 }
 
 // 歌曲时间变动回调函数
@@ -328,6 +334,7 @@ function play(music) {
         return;
     }
     
+    rem.errCount = 0;   // 连续播放失败的歌曲数归零
     music_bar.goto(0);  // 进度条强制归零
     changeCover(music);    // 更新封面展示
     ajaxLyric(music, lyricCallback);     // ajax加载歌词
@@ -337,7 +344,7 @@ function play(music) {
 
 // 我的要求并不高，保留这一句版权信息可好？
 // 保留了，你不会损失什么；而保留版权，是对作者最大的尊重。
-console.info('欢迎使用 MKOnlinePlayer!\n当前版本：'+mkPlayer.version+' \n作者：mengkun(http://mkblog.cn)\n歌曲来源于各大音乐平台\nGithub：https://github.com/mengkunsoft/MKOnlineMusicPlayer');
+console.info('欢迎使用 MKOnlinePlayer!\n当前版本：'+mkPlayer.version+' \n作者：mengkun(https://mkblog.cn)\n歌曲来源于各大音乐平台\nGithub：https://github.com/mengkunsoft/MKOnlineMusicPlayer');
 
 // 音乐进度条拖动回调函数
 function mBcallback(newVal) {

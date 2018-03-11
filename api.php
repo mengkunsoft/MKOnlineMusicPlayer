@@ -1,9 +1,9 @@
 <?php
 /**************************************************
- * MKOnlinePlayer v2.3
+ * MKOnlinePlayer v2.4
  * 后台音乐数据抓取模块
  * 编写：mengkun(https://mkblog.cn)
- * 时间：2018-2-11
+ * 时间：2018-3-11
  * 特别感谢 @metowolf 提供的 Meting.php
  *************************************************/
 
@@ -22,7 +22,7 @@ $netease_cookie = '';
 **/
 
 
-define('HTTPS', true);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
+define('HTTPS', false);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
 define('DEBUG', false);      // 是否开启调试模式，正常使用时请将此项置为“false”
 
 /*
@@ -58,6 +58,11 @@ switch(getParam('types'))   // 根据请求的 Api，执行相应操作
         $id = getParam('id');  // 歌曲ID
         
         $data = $API->url($id);
+        
+        if($source == 'netease' && json_decode($data, true)['url'] == '') {    // 修复网易云链接获取失效（双保险）
+            echojson('{"url":"https://music.163.com/song/media/outer/url?id='.$id.'.mp3","br":320}');
+            return;
+        }
         
         echojson($data);
         break;
