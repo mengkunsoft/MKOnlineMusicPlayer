@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.4
+ * MKOnlinePlayer v2.41
  * 播放器主功能模块
  * 编写：mengkun(https://mkblog.cn)
- * 时间：2018-3-11
+ * 时间：2018-3-13
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
@@ -16,7 +16,7 @@ var mkPlayer = {
     dotshine: true,    // 是否开启播放进度条的小点闪动效果[不支持IE](true/false) *开启后会有些卡
     mdotshine: false,   // 是否开启[移动端]播放进度条的小点闪动效果[不支持IE](true/false)
     volume: 0.6,        // 默认音量值(0~1之间)
-    version: "v2.4",    // 播放器当前版本号(仅供调试)
+    version: "v2.41",    // 播放器当前版本号(仅供调试)
     debug: false   // 是否开启调试模式(true/false)
 };
 
@@ -68,26 +68,29 @@ function pause() {
 
 // 循环顺序
 function orderChange() {
-    if(!rem.order) rem.order = 2;
-    rem.order++;
-    if(rem.order > 3) rem.order = 1;
-    
     var orderDiv = $(".btn-order");
     orderDiv.removeClass();
     switch(rem.order) {
-        case 1:     // 单曲循环
-            orderDiv.addClass("player-btn btn-order btn-order-single");
-            orderDiv.attr("title","单曲循环");
-            break;
-            
-        case 3:     // 随机播放
-            orderDiv.addClass("player-btn btn-order btn-order-random");
-            orderDiv.attr("title","随机播放");
-            break;
-            
-        default:    // 顺序播放
+        case 1:     // 单曲循环 -> 列表循环
             orderDiv.addClass("player-btn btn-order btn-order-list");
-            orderDiv.attr("title","列表循环");
+            orderDiv.attr("title", "列表循环");
+            layer.msg("列表循环");
+            rem.order = 2;
+            break;
+            
+        case 3:     // 随机播放 -> 单曲循环
+            orderDiv.addClass("player-btn btn-order btn-order-single");
+            orderDiv.attr("title", "单曲循环");
+            layer.msg("单曲循环");
+            rem.order = 1;
+            break;
+            
+        // case 2:
+        default:    // 列表循环(其它) -> 随机播放
+            orderDiv.addClass("player-btn btn-order btn-order-random");
+            orderDiv.attr("title", "随机播放");
+            layer.msg("随机播放");
+            rem.order = 3;
     }
 }
 
@@ -317,14 +320,6 @@ function play(music) {
         refreshList();  // 更新列表显示
     }
     
-    // 解决网易云音乐部分歌曲无法播放问题
-    if(music.source == "netease") {
-        music.url = music.url.replace(/m7c.music./g, "m7.music.");
-        music.url = music.url.replace(/m8c.music./g, "m8.music.");
-    } else if(music.source == "baidu") {    // 解决百度音乐防盗链
-        music.url = music.url.replace(/http:\/\/zhangmenshiting.qianqian.com/g, "https://gss0.bdstatic.com/y0s1hSulBw92lNKgpU_Z2jR7b2w6buu");
-    }
-	
     try {
         rem.audio[0].pause();
         rem.audio.attr('src', music.url);

@@ -59,11 +59,6 @@ switch(getParam('types'))   // 根据请求的 Api，执行相应操作
         
         $data = $API->url($id);
         
-        if($source == 'netease' && json_decode($data, true)['url'] == '') {    // 修复网易云链接获取失效（双保险）
-            echojson('{"url":"https://music.163.com/song/media/outer/url?id='.$id.'.mp3","br":320}');
-            return;
-        }
-        
         echojson($data);
         break;
         
