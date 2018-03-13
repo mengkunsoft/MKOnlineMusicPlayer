@@ -120,6 +120,18 @@ function ajaxUrl(music, callback)
                 console.debug("歌曲链接：" + jsonData.url);
             }
             
+            // 解决网易云音乐部分歌曲无法播放问题
+            if(music.source == "netease") {
+                if(jsonData.url === "") {
+                    jsonData.url = "https://music.163.com/song/media/outer/url?id=" + music.id + ".mp3";
+                } else {
+                    jsonData.url = jsonData.url.replace(/m7c.music./g, "m7.music.");
+                    jsonData.url = jsonData.url.replace(/m8c.music./g, "m8.music.");
+                }
+            } else if(music.source == "baidu") {    // 解决百度音乐防盗链
+                jsonData.url = jsonData.url.replace(/http:\/\/zhangmenshiting.qianqian.com/g, "https://gss0.bdstatic.com/y0s1hSulBw92lNKgpU_Z2jR7b2w6buu");
+            }
+            
             if(jsonData.url === "") {
                 music.url = "err";
             } else {

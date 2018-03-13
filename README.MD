@@ -1,4 +1,4 @@
-MKOnlineMusicPlayer v2.32
+MKOnlineMusicPlayer
 ========
 MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人网易云音乐播放列表同步等功能。
 
@@ -30,7 +30,7 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 本播放器设计支持 IE9及以上的现代浏览器。并且已在 Chrome、firefox、IE11 等浏览器测试使用正常。
 
 #### 版权
-本播放器由 [mengkun(http://mkblog.cn)](http://mkblog.cn) 开发，您可以随意修改、使用、转载。使用或转载时`请务必保留出处`，抱拳了各位老铁们！
+本播放器由 [mengkun(https://mkblog.cn)](https://mkblog.cn) 开发，您可以随意修改、使用、转载。使用或转载时`请务必保留出处`，抱拳了各位老铁们！
 
 #### 歌曲
 播放器中的歌曲来自各大音乐平台，歌曲版权归各大平台享有。请支持正版音乐。
@@ -41,32 +41,14 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 
 ### 常见问题
 -----
-**网易云音乐源播放失效，歌曲列表只剩一首歌**
-
-解决办法参考 [网易云音乐问题](https://github.com/mengkunsoft/MKOnlineMusicPlayer/wiki/%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E9%97%AE%E9%A2%98)
-
-**歌单读取失败 - 404**
-
-本程序需要上传至网站空间(服务器)使用，不支持在本地打开
-
-
-**歌单读取失败 - 200**
-
-请确保你的服务器支持 PHP ，并且 PHP 版本 >= 5.4
-
-
-**歌单页封面显示不出来**
-
-请打开 `api.php`，将第十行的 `define('HTTPS', true);` 修改为 `define('HTTPS', false);`
-
-**更多常见问题**
-
 [请前往 wiki 查阅](https://github.com/mengkunsoft/MKOnlineMusicPlayer/wiki)
+`遇到问题请详细阅读以上 wiki，已经进行解答的问题将不再回复！`
 
-### 待解决的问题
+### 开发计划
 -----
 - 歌曲音质切换功能
 - IOS 歌曲播放问题
+- 美化歌曲搜索框
 
 ### 打赏
 -----
@@ -77,6 +59,11 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 
 ### 更新日志
 -----
+#### v2.41 `2018/3/13`
+- 修复 IE 下播放键错位的 BUG
+- 修改默认背景为黑色
+- 其它一些细节优化
+
 #### v2.4 `2018/3/11`
 - 修复网易云音乐无法播放
 - 增加标题栏滚动效果(感谢@lzcykevin)
