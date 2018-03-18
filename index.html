@@ -21,7 +21,15 @@
     <title>MKOnlinePlayer v2.4</title>
     <meta name="description" content="一款开源的基于网易云音乐api的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人音乐播放列表同步等功能。"/>
     <meta name="keywords" content="孟坤播放器,在线音乐播放器,MKOnlinePlayer,网易云音乐,音乐api,音乐播放器源代码"/>
-    
+    <script>
+    if (navigator.serviceWorker != null) {
+      navigator.serviceWorker.register('sw.js')
+      .then(function(registration) {
+        console.log('Registered events at scope: ', registration.scope);
+      });
+    }
+    </script>
+    <link rel="manifest" href="manifest.json" />
     <!-- 不支持IE8及以下版本浏览器 -->
     <!--[if lte IE 8]>
         <script>window.location.href="plugns/killie/"</script>
