@@ -24,6 +24,7 @@ $netease_cookie = '';
 
 define('HTTPS', false);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
 define('DEBUG', false);      // 是否开启调试模式，正常使用时请将此项置为“false”
+define('CACHE_PATH', 'cache/');     // 文件缓存目录,请确保该目录存在且有读写权限。如无需缓存，可将此行注释掉
 
 /*
  如果遇到程序不能正常运行，请开启调试模式，然后访问 http://你的网站/音乐播放器地址/api.php ，进入服务器运行环境检测。
@@ -52,7 +53,11 @@ if($source == 'kugou' || $source == 'baidu') {
     $API->cookie($netease_cookie);    // 解决网易云 Cookie 失效
 }
 
-switch(getParam('types'))   // 根据请求的 Api，执行相应操作
+// 没有缓存文件夹则创建
+if(defined('CACHE_PATH') && !is_dir(CACHE_PATH)) createFolders(CACHE_PATH);
+
+$types = getParam('types');
+switch($types)   // 根据请求的 Api，执行相应操作
 {
     case 'url':   // 获取歌曲链接
         $id = getParam('id');  // 歌曲ID
@@ -73,7 +78,22 @@ switch(getParam('types'))   // 根据请求的 Api，执行相应操作
     case 'lyric':       // 获取歌词
         $id = getParam('id');  // 歌曲ID
         
-        $data = $API->lyric($id);
+        if(($source == 'netease') && defined('CACHE_PATH')) {
+            $cache = CACHE_PATH.$source.'_'.$types.'_'.$id.'.json';
+            
+            if(file_exists($cache)) {   // 缓存存在，则读取缓存
+                $data = file_get_contents($cache);
+            } else {
+                $data = $API->lyric($id);
+                
+                // 只缓存链接获取成功的歌曲
+                if(json_decode($data)->lyric !== '') {
+                    file_put_contents($cache, $data);
+                }
+            }
+        } else {
+            $data = $API->lyric($id);
+        }
         
         echojson($data);
         break;
@@ -97,7 +117,22 @@ switch(getParam('types'))   // 根据请求的 Api，执行相应操作
     case 'playlist':    // 获取歌单中的歌曲
         $id = getParam('id');  // 歌单ID
         
-        $data = $API->format(false)->playlist($id);
+        if(($source == 'netease') && defined('CACHE_PATH')) {
+            $cache = CACHE_PATH.$source.'_'.$types.'_'.$id.'.json';
+            
+            if(file_exists($cache) && (date("Ymd", filemtime($cache)) == date("Ymd"))) {   // 缓存存在，则读取缓存
+                $data = file_get_contents($cache);
+            } else {
+                $data = $API->format(false)->playlist($id);
+                
+                // 只缓存链接获取成功的歌曲
+                if(isset(json_decode($data)->playlist->tracks)) {
+                    file_put_contents($cache, $data);
+                }
+            }
+        } else {
+            $data = $API->format(false)->playlist($id);
+        }
         
         echojson($data);
         break;
@@ -133,6 +168,14 @@ switch(getParam('types'))   // 根据请求的 Api，执行相应操作
         }
         
         echo '</body></html>';
+}
+
+/**
+ * 创建多层文件夹 
+ * @param $dir 路径
+ */
+function createFolders($dir) {
+    return is_dir($dir) or (createFolders(dirname($dir)) and mkdir($dir, 0755));
 }
 
 /**
