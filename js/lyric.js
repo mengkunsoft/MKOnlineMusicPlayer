@@ -1,8 +1,8 @@
 /**************************************************
- * MKOnlinePlayer v2.2
+ * MKOnlinePlayer v2.31
  * 歌词解析及滚动模块
  * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-3-26
+ * 时间：2017-9-13
  *************************************************/
  
 var lyricArea = $("#lyric");    // 歌词显示容器
@@ -14,7 +14,9 @@ function lyricTip(str) {
 
 // 歌曲加载完后的回调函数
 // 参数：歌词源文件
-function lyricCallback(str) {
+function lyricCallback(str, id) {
+    if(id !== musicList[rem.playlist].item[rem.playid].id) return;  // 返回的歌词不是当前这首歌的，跳过
+    
     rem.lyric = parseLyric(str);    // 解析获取到的歌词
     
     if(rem.lyric === '') {
