@@ -26,6 +26,33 @@ MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器�
 #### 运行环境
 php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 
+## docker 安装运行：
+
+从docker仓库获取镜像：
+```sh
+docker pull yinaoxiong/mkonlinemusicplayer
+```
+
+或者从源码构建镜像：
+
+```shell
+git clone https://github.com/mengkunsoft/MKOnlineMusicPlayer.git
+cd MKOnlineMusicPlayer/
+docker build -t your-image-name .
+```
+
+运行：
+
+```shell
+docker run -d -p {open port}:80 --name {container name} --restart=always {image name}
+```
+
+停止删除容器：
+
+```shell
+docker stop {container name}
+docker rm -v {container name}
+```
 #### 兼容性
 本播放器设计支持 IE9及以上的现代浏览器。并且已在 Chrome、firefox、IE11 等浏览器测试使用正常。
 
