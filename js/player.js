@@ -158,7 +158,9 @@ function nextMusic() {
         case 3: 
             if (musicList[1] && musicList[1].item.length) {
                 var id = parseInt(Math.random() * musicList[1].item.length);
+                var position = id * 50;
                 playList(id);
+                $("#main-list").mCustomScrollbar("scrollTo",position);
             }
         break;
         default:
