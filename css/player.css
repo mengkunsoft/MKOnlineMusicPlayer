@@ -1,9 +1,9 @@
 @charset "utf-8";
 /**************************************************
- * MKOnlinePlayer v2.3
+ * MKOnlinePlayer v2.41
  * 播放器样式表文件
- * 编写：mengkun(http://mkblog.cn)
- * 时间：2017-9-9
+ * 编写：mengkun(https://mkblog.cn)
+ * 时间：2018-3-13
  *************************************************/
 blockquote, body, button, dd, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, hr, html, input, lengend, li, ol, p, pre, td, textarea, th, ul {
     margin: 0;
@@ -67,15 +67,14 @@ html,body{
 body {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ba43a8+0,ea4fce+62,537bad+100&amp;0.38+0,0.17+61,0.8+100 */
     /* IE9 SVG, needs conditional override of 'filter' to 'none' */
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjYmE0M2E4IiBzdG9wLW9wYWNpdHk9IjAuMzgiLz4KICAgIDxzdG9wIG9mZnNldD0iNjElIiBzdG9wLWNvbG9yPSIjZTk0ZmNkIiBzdG9wLW9wYWNpdHk9IjAuMTciLz4KICAgIDxzdG9wIG9mZnNldD0iNjIlIiBzdG9wLWNvbG9yPSIjZWE0ZmNlIiBzdG9wLW9wYWNpdHk9IjAuMTkiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzUzN2JhZCIgc3RvcC1vcGFjaXR5PSIwLjgiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
-    background: -moz-linear-gradient(-45deg,  rgba(186,67,168,0.38) 0%, rgba(233,79,205,0.17) 61%, rgba(234,79,206,0.19) 62%, rgba(83,123,173,0.8) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(186,67,168,0.38)), color-stop(61%,rgba(233,79,205,0.17)), color-stop(62%,rgba(234,79,206,0.19)), color-stop(100%,rgba(83,123,173,0.8))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(-45deg,  rgba(186,67,168,0.38) 0%,rgba(233,79,205,0.17) 61%,rgba(234,79,206,0.19) 62%,rgba(83,123,173,0.8) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(-45deg,  rgba(186,67,168,0.38) 0%,rgba(233,79,205,0.17) 61%,rgba(234,79,206,0.19) 62%,rgba(83,123,173,0.8) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(-45deg,  rgba(186,67,168,0.38) 0%,rgba(233,79,205,0.17) 61%,rgba(234,79,206,0.19) 62%,rgba(83,123,173,0.8) 100%); /* IE10+ */
-    background: linear-gradient(135deg,  rgba(186,67,168,0.38) 0%,rgba(233,79,205,0.17) 61%,rgba(234,79,206,0.19) 62%,rgba(83,123,173,0.8) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#61ba43a8', endColorstr='#cc537bad',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
-
+    background: #000000;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7f7280', endColorstr='#000000');
+    background-image: -webkit-linear-gradient(200deg, #7f7280, #000000);
+    background-image: -moz-linear-gradient(200deg, #7f7280, #000000);
+    background-image: -o-linear-gradient(200deg, #7f7280, #000000);
+    background-image: -ms-linear-gradient(200deg, #7f7280, #000000);
+    background-image: linear-gradient(200deg, #7f7280, #000000);
+    
     overflow: hidden;
 }
 /* 模糊图像层 */
@@ -187,6 +186,10 @@ body {
     -moz-transition: all 0.25s ease;
     -o-transition: all 0.25s ease;
     -ms-transition: all 0.25s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     display: inline-block;
     position: relative;
     border-radius: 2px;
@@ -623,55 +626,51 @@ body {
     height: 100%;
     position: relative;
     margin: 0 10px;
-    display: flex;
-    align-items: center;
 }
 .con-btn a{
     display: inline-block;
-    /* position: absolute;
-    top: 50%; */
-    flex: 1;
+    position: absolute;
+    top: 50%; 
 }
 .btn-prev{
     background-position: 0 -30px;
     width: 19px;
     height: 20px;
-    /* margin-top: -10px; */
+    margin-top: -10px; 
 }
 
 .btn-play{
     width: 19px;
     height: 29px;
-    flex: 0 0 30px !important;
-    /* margin-top: -14.5px; */
-    left: 50%;
-    /* margin-left: -10.5px; */
+    margin-top: -14.5px; 
+    left: 36%;
+    margin-left: -10.5px; 
 }
 .btn-next{
     background-position: 0 -52px;
-    right: 0;
+    right: 30%;
     width: 19px;
     height: 20px;
-    /* margin-top: -10px; */
+    margin-top: -10px; 
 }
 .btn-order{
-    background-position: 0 -205px;
+    background-position: 0 -173px;
+    background-size: 450%;
     right: 0;
-    width: 19px;
+    width: 25px;
     height: 25px;
-    /* margin-top: -10px; */
+    margin-top: -10px; 
 }
 .btn-order-single {
-  background-position: 0 -231px;
-  height: 25px;
+    background-position: 0 -196px;
 }
 .btn-order-list {
-  background-position: 0 -204px;
-  height: 25px;
+    background-position: 0 -173px;
 }
 .btn-order-random {
-  background-position: 0 -73px;
-  height: 20px;
+    background-position: 0 -62px;
+    height: 18px;
+    margin-top: -9px;
 }
 
 /* 音乐进度条区域 */
@@ -690,7 +689,7 @@ body {
     left: 10px;
     right: 0;
     top: 50%;
-    margin-top: -10px;
+    margin-top: -9px;
 }
 
 /* 音量控制区域 */

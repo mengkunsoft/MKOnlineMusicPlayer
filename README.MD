@@ -1,8 +1,10 @@
-MKOnlineMusicPlayer v2.32
+MKOnlineMusicPlayer
 ========
 MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人网易云音乐播放列表同步等功能。
 
 前端界面参照 QQ 音乐网页版进行布局，同时采用了流行的响应式设计，无论是在PC端还是在手机端，均能给您带来原生 app 般的使用体验。
+
+> 本项目仅为学习前端的练手之作，请勿用作商业用途，请勿通过本项目下载盗版歌曲资源，否则后果自负！
 
 ### 界面欣赏
 -----
@@ -30,35 +32,25 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 本播放器设计支持 IE9及以上的现代浏览器。并且已在 Chrome、firefox、IE11 等浏览器测试使用正常。
 
 #### 版权
-本播放器由 [mengkun(http://mkblog.cn)](http://mkblog.cn) 开发，您可以随意修改、使用、转载。使用或转载时`请务必保留出处`，抱拳了各位老铁们！
+本播放器由 [mengkun(https://mkblog.cn)](https://mkblog.cn) 开发，您可以随意修改、使用、转载。使用或转载时`请务必保留出处`，抱拳了各位老铁们！
 
 #### 歌曲
 播放器中的歌曲来自各大音乐平台，歌曲版权归各大平台享有。请支持正版音乐。
 
 #### 其它
 作者很忙，非诚勿扰。欢迎提交 BUG 及好的建议，不欢迎一上来就问一些基础的东西及唠东唠西。
+`如果要提交问题，请务必告知您的网址，否则无法处理`
 
 ### 常见问题
 -----
-**歌单读取失败 - 404**
+[请前往 wiki 查阅](https://github.com/mengkunsoft/MKOnlineMusicPlayer/wiki)
+`遇到问题请详细阅读以上 wiki，已经进行解答的问题将不再回复！`
 
-本程序需要上传至网站空间(服务器)使用，不支持在本地打开
-
-
-**歌单读取失败 - 200**
-
-请确保你的服务器支持 PHP ，并且 PHP 版本 >= 5.4
-
-
-**歌单页封面显示不出来**
-
-请打开 `api.php`，将第十行的 `define('HTTPS', true);` 修改为 `define('HTTPS', false);`
-
-### 待解决的问题
+### 开发计划
 -----
-- 高音质音乐下载功能
+- 歌曲音质切换功能
 - IOS 歌曲播放问题
-- 歌曲播放模式切换(单曲循环、随机播放、列表循环)功能
+- 美化歌曲搜索框
 
 ### 打赏
 -----
@@ -69,6 +61,19 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 
 ### 更新日志
 -----
+#### v2.41 `2018/3/13`
+- 修复 IE 下播放键错位的 BUG
+- 修改默认背景为黑色
+- 其它一些细节优化
+
+#### v2.4 `2018/3/11`
+- 修复网易云音乐无法播放
+- 增加标题栏滚动效果(感谢@lzcykevin)
+- 增加歌曲循环播放控制(感谢@yuxizhe)
+- 修复百度音乐无法播放
+- 优化连续播放失败的歌曲过多时，自动终止播放。防止卡死
+- 压缩图片素材，限制封面图片尺寸，优化页面加载速度
+
 #### v2.32 `2017/9/15`
 - 修复播放历史记录歌曲时播放失败的 BUG
 - 新增播放歌曲时浏览器标题栏显示相关信息
@@ -203,6 +208,9 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 ### 耻辱柱
 -----
 恭喜下列个人或单位永久入驻耻辱柱！
+
+#### 素材火 [http://www.sucaihuo.com/]
+原因：以积分的形式变相售卖本作品(http://www.sucaihuo.com/php/3378.html ) 截图：https://t.cn/RFsgAAw
 
 #### 绿岛资源站 [http://www.ldzy.cc/]
 原因：未经允许，发布到淘宝售卖(https://item.taobao.com/item.htm?id=560064138441 ) 截图：https://t.cn/RlNRmi5
