@@ -218,4 +218,6 @@ php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
 #### 68喜论坛 [http://www.68xi.com/]
 原因：未经允许，删改版权信息(http://music.68xi.com/ )，并发布到淘宝售卖(https://item.taobao.com/item.htm?id=547226809330 )
 
+还有这位朋友 https://github.com/HenryGit8/PondMusicPlayer
+
 `奉劝某些“人”保留住做人的最基本底线，遵守开源协议，并引以为戒`
