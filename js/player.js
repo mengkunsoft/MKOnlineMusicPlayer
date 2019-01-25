@@ -20,7 +20,7 @@ var mkPlayer = {
     debug: false   // 是否开启调试模式(true/false)
 };
 
-
+let playPromise;
 
 /*******************************************************
  * 以下内容是播放器核心文件，不建议进行修改，否则可能导致播放器无法正常使用!
@@ -49,7 +49,18 @@ function audioErr() {
 // 点击暂停按钮的事件
 function pause() {
     if(rem.paused === false) {  // 之前是播放状态
-        rem.audio[0].pause();  // 暂停
+        playPromise =  rem.audio[0].pause();
+        if (playPromise) {
+            playPromise.then(function(){
+                // 音频加载成功
+                // 音频的播放需要耗时
+                setTimeout(function(){
+                    // 后续操作
+                }, 1);
+            }).catch((e) => {
+                // 音频加载失败
+            });
+        }
     } else {
         // 第一次点播放
         if(rem.playlist === undefined) {
@@ -62,7 +73,7 @@ function pause() {
             
             listClick(0);
         }
-        let playPromise =  rem.audio[0].play();
+        playPromise =  rem.audio[0].play();
         if (playPromise) {
             playPromise.then(function(){
                 // 音频加载成功
@@ -155,27 +166,41 @@ function audioPause() {
     document.title = rem.webTitle;    // 改变浏览器标题
 }
 
+let prevPlayId = false;
 // 播放上一首歌
 function prevMusic() {
-    playList(rem.playid - 1);
+    let id = rem.playid - 1;
+    switch (rem.order ? rem.order : 1) {
+        case 3:
+            if(! prevPlayId)
+            {
+                layer.msg('点错了吧?你还没听过歌呢~');
+                break;
+            }
+            if(prevPlayId == rem.playid)
+            {
+                nextMusic();
+                break;
+            }
+            id = prevPlayId;
+            break;
+    }
+    playList(id);
 }
 
 // 播放下一首歌
 function nextMusic() {
+    prevPlayId = rem.playid;
+    let id = rem.playid + 1;
     switch (rem.order ? rem.order : 1) {
-        case 1,2: 
-            playList(rem.playid + 1);
-        break;
         case 3: 
             if (musicList[1] && musicList[1].item.length) {
-                var id = parseInt(Math.random() * musicList[1].item.length);
+                id = parseInt(Math.random() * musicList[1].item.length);
                 playList(id);
             }
         break;
-        default:
-            playList(rem.playid + 1); 
-        break;
     }
+    playList(id);
 }
 // 自动播放时的下一首歌
 function autoNextMusic() {
@@ -185,6 +210,7 @@ function autoNextMusic() {
         nextMusic();
     }
 }
+
 
 // 歌曲时间变动回调函数
 function updateProgress(){
@@ -280,6 +306,16 @@ function playList(id) {
     } else {
         play(musicList[1].item[id]);
     }
+
+    var position = parseInt(id * 50);
+    if(rem.isMobile)
+    {
+        $('#main-list').animate({scrollTop:position}, 800);
+    }
+    else
+    {
+        $("#main-list").mCustomScrollbar("scrollTo",position);
+    }
 }
 
 // 初始化 Audio
@@ -334,7 +370,18 @@ function play(music) {
     try {
         rem.audio[0].pause();
         rem.audio.attr('src', music.url);
-        rem.audio[0].play();
+        playPromise =  rem.audio[0].play();
+        if (playPromise) {
+            playPromise.then(function(){
+                // 音频加载成功
+                // 音频的播放需要耗时
+                setTimeout(function(){
+                    // 后续操作
+                }, 1);
+            }).catch((e) => {
+                // 音频加载失败
+            });
+        }
     } catch(e) {
         audioErr(); // 调用错误处理函数
         return;

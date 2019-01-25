@@ -22,7 +22,7 @@ $netease_cookie = '';
 **/
 
 
-define('HTTPS', false);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
+define('HTTPS', true);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
 define('DEBUG', false);      // 是否开启调试模式，正常使用时请将此项置为“false”
 define('CACHE_PATH', 'cache/');     // 文件缓存目录,请确保该目录存在且有读写权限。如无需缓存，可将此行注释掉
 
