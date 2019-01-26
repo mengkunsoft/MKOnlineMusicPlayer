@@ -56,7 +56,7 @@ function pause() {
                 // 音频的播放需要耗时
                 setTimeout(function(){
                     // 后续操作
-                }, 1);
+                }, 100);
             }).catch((e) => {
                 // 音频加载失败
             });
@@ -80,7 +80,7 @@ function pause() {
                 // 音频的播放需要耗时
                 setTimeout(function(){
                     // 后续操作
-                }, 1);
+                }, 100);
             }).catch((e) => {
                 // 音频加载失败
             });
@@ -377,7 +377,7 @@ function play(music) {
                 // 音频的播放需要耗时
                 setTimeout(function(){
                     // 后续操作
-                }, 1);
+                }, 100);
             }).catch((e) => {
                 // 音频加载失败
             });
