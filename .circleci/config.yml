@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:18.06.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 18.06.0-ce
+      - run : |
+          git clone https://github.com/mengkunsoft/MKOnlineMusicPlayer.git
+          cd MKOnlineMusicPlayer && export COMMIT_SHA=$(git log -1 --pretty=format:"%H" | awk '{print substr($1,1,8)}')
+          mv ../Dockerfile ../php.ini ../default.conf .
+          docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD
+          docker build -t yinaoxiong/mkonlinemusicplayer:alpine-$COMMIT_SHA -f Dockerfile .
+          docker tag  yinaoxiong/mkonlinemusicplayer:alpine-$COMMIT_SHA yinaoxiong/mkonlinemusicplayer:latest
+          docker push yinaoxiong/mkonlinemusicplayer:latest
+          docker push yinaoxiong/mkonlinemusicplayer:alpine-$COMMIT_SHA
+workflows:
+  version: 2
+  build:
+    jobs:
+    - build
