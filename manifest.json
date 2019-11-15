@@ -1,0 +1,20 @@
+{
+  "name": "音乐播放器",
+  "short_name": "心乐",
+  "display": "standalone",
+  "start_url": "/",
+  "theme_color": "#8888ff",
+  "background_color": "#aaaaff",
+  "icons": [
+    {
+      "src":"images/pwalogo.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src":"images/pwalogo.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
+}
