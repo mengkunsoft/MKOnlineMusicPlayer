@@ -4,7 +4,7 @@ MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器�
 
 前端界面参照 QQ 音乐网页版进行布局，同时采用了流行的响应式设计，无论是在PC端还是在手机端，均能给您带来原生 app 般的使用体验。
 
-> 本项目仅为学习前端的练手之作，请勿用作商业用途，请勿通过本项目下载盗版歌曲资源，否则后果自负！
+> 本项目仅为学习前端的练手之作，请勿用作商业用途，请勿利用本项目下载盗版歌曲资源，否则后果自负！
 
 ### 界面欣赏
 -----
@@ -14,7 +14,6 @@ MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器�
 
 ![歌曲搜索与播放](https://user-images.githubusercontent.com/16880885/30487344-c93a0306-9a65-11e7-92f3-552072b1dbce.jpg)
 
-
 ### 相关链接
 -----
 **在线演示** [http://lab.mkblog.cn/music/](http://lab.mkblog.cn/music/)
@@ -23,41 +22,11 @@ MKOnlineMusicPlayer 是一款开源的基于 `Meting` 的在线音乐播放器�
 
 **GitHub** [https://github.com/mengkunsoft/MKOnlineMusicPlayer](https://github.com/mengkunsoft/MKOnlineMusicPlayer)
 
-### 注意事项
------
-#### 运行环境
-php 5.4+, curl_exec, file_get_contents, json_decode, openssl_encrypt
-
-#### 兼容性
-本播放器设计支持 IE9及以上的现代浏览器。并且已在 Chrome、firefox、IE11 等浏览器测试使用正常。
-
-#### 版权
-本播放器由 [mengkun(https://mkblog.cn)](https://mkblog.cn) 开发，您可以随意修改、使用、转载。使用或转载时`请务必保留出处`，抱拳了各位老铁们！
-
-#### 歌曲
-播放器中的歌曲来自各大音乐平台，歌曲版权归各大平台享有。请支持正版音乐。
-
-#### 其它
-作者很忙，非诚勿扰。欢迎提交 BUG 及好的建议，不欢迎一上来就问一些基础的东西及唠东唠西。
-`如果要提交问题，请务必告知您的网址，否则无法处理`
-
 ### 常见问题
 -----
 [请前往 wiki 查阅](https://github.com/mengkunsoft/MKOnlineMusicPlayer/wiki)
-`遇到问题请详细阅读以上 wiki，已经进行解答的问题将不再回复！`
 
-### 开发计划
------
-- 歌曲音质切换功能
-- IOS 歌曲播放问题
-- 美化歌曲搜索框
-
-### 打赏
------
-- 解决上面这些问题，需要花费很多时间与精力。支持项目继续完善下去，你也可以贡献一份力量！
-- 有了打赏，也就会有更新的动力 : )
-
-   ![](https://ws3.sinaimg.cn/large/006srDtYly1ffqy973ijwj30hk05atam.jpg)
+**遇到问题请详细阅读以上 wiki！**
 
 ### 更新日志
 -----
