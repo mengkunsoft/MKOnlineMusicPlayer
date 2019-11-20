@@ -22,7 +22,7 @@ $netease_cookie = '';
 **/
 
 
-define('HTTPS', false);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
+define('HTTPS', true);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
 define('DEBUG', false);      // 是否开启调试模式，正常使用时请将此项置为“false”
 define('CACHE_PATH', 'cache/');     // 文件缓存目录,请确保该目录存在且有读写权限。如无需缓存，可将此行注释掉
 
@@ -172,7 +172,8 @@ switch($types)   // 根据请求的 Api，执行相应操作
 
 /**
  * 创建多层文件夹 
- * @param $dir 路径
+ * @param string $dir 路径
+ * @return bool
  */
 function createFolders($dir) {
     return is_dir($dir) or (createFolders(dirname($dir)) and mkdir($dir, 0755));
@@ -180,8 +181,8 @@ function createFolders($dir) {
 
 /**
  * 检测服务器函数支持情况
- * @param $f 函数名
- * @param $m 是否为必须函数
+ * @param string $f 函数名
+ * @param bool $m 是否为必须函数
  * @return 
  */
 function checkfunc($f,$m = false) {
@@ -198,9 +199,9 @@ function checkfunc($f,$m = false) {
 
 /**
  * 获取GET或POST过来的参数
- * @param $key 键值
- * @param $default 默认值
- * @return 获取到的内容（没有则为默认值）
+ * @param string $key 键值
+ * @param string $default 默认值
+ * @return string 获取到的内容（没有则为默认值）
  */
 function getParam($key, $default='')
 {
@@ -209,7 +210,7 @@ function getParam($key, $default='')
 
 /**
  * 输出一个json或jsonp格式的内容
- * @param $data 数组内容
+ * @param string $data 数组内容
  */
 function echojson($data)    //json和jsonp通用
 {
