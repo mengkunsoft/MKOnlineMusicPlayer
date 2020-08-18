@@ -62,7 +62,18 @@ function pause() {
             
             listClick(0);
         }
-        rem.audio[0].play();
+        let playPromise =  rem.audio[0].play();
+        if (playPromise) {
+            playPromise.then(function(){
+                // 音频加载成功
+                // 音频的播放需要耗时
+                setTimeout(function(){
+                    // 后续操作
+                }, 1);
+            }).catch((e) => {
+                // 音频加载失败
+            });
+        }
     }
 }
 
